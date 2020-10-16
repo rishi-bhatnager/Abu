@@ -1,2 +1,2 @@
 # Abu
-Financial chat bot
+Financial chat bot leveraging BlackRock Aladdin API and Google Chat Bots

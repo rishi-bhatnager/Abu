@@ -60,12 +60,14 @@ def results():
         sector = req.get('queryResult').get('parameters').get('sector')
         return {'fulfillmentText': 'Sector: {}'.format(sector)}
     elif action == 'classification':
-        # fndsljfs
+        #fndsljfs
         pass
     elif action == 'high-low':
-        return {'fulfillmentText': 'Here is your portfolio\n Would you like to see your top performers or a more advanced breakdown?'}
+        return {'fulfillmentText': '{}'.format(txt)}
     elif action == 'portfolio':
-        return {'fulfillmentText': 'Sector: {}'.format("fdsf")}
+        return {
+            'fulfillmentText': 'Here is your portfolio\n Would you like to see your top performers or a more advanced breakdown?'}
+
     elif action == "marketData":
         # show market data
         pass

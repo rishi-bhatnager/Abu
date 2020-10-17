@@ -90,11 +90,7 @@ def get_levels(holdings, retNumHoldings=True):
         levels: a dictionary mapping tickers to their levels
         numHoldings: the number of securities the portfolio contains (only returned if assoc. param set to True)
     '''
-<<<<<<< HEAD
-    perfData,numHoldings = get_performanceData(data['holdings'])
-=======
     perfData,numHoldings = get_performanceData(holdings)
->>>>>>> main
 
     levels = {}
     securities = perfData['resultMap']['RETURNS']
@@ -118,12 +114,7 @@ def getHoldingsList(holdingsData):
 
 
 def get_rank(called_from_sector_rank=False):
-<<<<<<< HEAD
-    print('fdsf')
-    levels,numHoldings = get_levels()
-=======
     levels,numHoldings = get_levels(getHoldingsList(data['holdings']))
->>>>>>> main
 
     # sorts levels (next line puts in order of decreasing value) into list of size-2 tuples containing the (tcker,level)
     levels = [(k, v) for k, v in sorted(levels.items(), key=lambda item: item[1])]

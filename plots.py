@@ -1,5 +1,6 @@
 # Script for testing the BlackRock API
 
+import json
 import requests
 import numpy as np
 import matplotlib.pyplot as plt

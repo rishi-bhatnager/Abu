@@ -22,27 +22,25 @@ sector = 'Industrials'
 
 def drawSectorPlots(sector):
     from suggestions import companiesPerSector
+    from br_api_tests import get_performanceData
+
     sector_dict = companiesPerSector()
     #Given sector dictionary and desired sector, create a plot of the overall growth of the sector
     #Based on the values of those securities
     if sector not in sector_dict:
         raise Exception("Sector not in dictionary")
-    url = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers='
-    for company,_ in sector_dict[sector][0:7]:
-        print(company)
-        url += company + '%2C'
-    url = url[:-3]
-    api = requests.get(url).json()
-    data = api['resultMap']['RETURNS'] # List of securities
+
+    perfData = get_performanceData([ticker for ticker,_ in sector_dict[sector]])
+    print(perfData[:5])
 
     plot_len = 365 # Show past year
     dates = []
     total_levels = np.zeros(plot_len)
     # Iterate through securities:
     for i in range(len(sector_dict[sector][0:7])):
-        daily = data[i]['returnsMap']
+        daily = perfData[i]['returnsMap']
         day_list = sorted(daily.items())
-        shortened_list = day_list[-plot_len:] # Grab only last year of data
+        shortened_list = day_list[-plot_len:] # Grab only last year of perfData
         first_level = shortened_list[0][1]['level']
         for n in range(plot_len):
             total_levels[n] += shortened_list[n][1]['level']*sector_dict[sector][i][1]/first_level

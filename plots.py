@@ -1,5 +1,5 @@
 # Script for testing the BlackRock API
-
+import pandas as pd
 import requests
 import numpy as np
 import matplotlib.pyplot as plt
@@ -54,6 +54,14 @@ def trendMonths():
     trendMonthPercents = {'down': returns['downMonthsPercent'], 'up': returns['upMonthsPercent'], 'nochange': returns['nochangeMonthsPercent']}
 
 
+def tablePortfolio():
+    data = {'First Column Name': ['First value', 'Second value', ...],
+            'Second Column Name': ['First value', 'Second value', ...],
+            }
+
+    df = pd.DataFrame(data, columns=['First Column Name', 'Second Column Name', ...])
+    print(df)
+
 
 
 def holdingsData(category):
@@ -92,4 +100,8 @@ def assetTypes():
 
 
 if __name__ == '__main__':
+    tablePortfolio()
+    """
     assetTypes()
+    """
+

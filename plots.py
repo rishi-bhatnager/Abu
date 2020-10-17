@@ -1,5 +1,9 @@
 # Script for testing the BlackRock API
 
+<<<<<<< HEAD
+import pandas as pd
+=======
+>>>>>>> fc54ae492b2a4608257029ba957e2ad8083daf43
 import json
 import requests
 import numpy as np
@@ -64,7 +68,7 @@ def trendMonths():
 
 
 def tablePortfolio():
-    from br_api_tests import get_levels
+    from .br_api_tests import get_levels
     portfolioDict = getHoldings()
     yields = get_levels(portfolioDict.keys(), retNumHoldings=False)
     print(portfolioDict)

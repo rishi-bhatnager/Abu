@@ -62,7 +62,7 @@ def get_performanceData(holdings, retNumHoldings=True):
     '''
     numHoldings = 0
     perf_url = 'https://www.blackrock.com/tools/hackathon/performance?identifiers='
-    for holding in data['holdings']:
+    for holding in holdings:
         perf_url += holding['ticker'] + '%2C'
         numHoldings += 1
     perf_url = perf_url[:-3]

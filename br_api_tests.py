@@ -1,4 +1,4 @@
-# Script for testing the BlackRock API
+# General tests of BlackRock API, notes on capabilities
 
 import requests, json
 

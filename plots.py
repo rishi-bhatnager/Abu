@@ -7,6 +7,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+portfolio = {"AAPL" : 100, "TSLA" 340, "SNAP" : 450}
+"""
+adict is a dictionary of the users portfolio
+"""
+def intializeApi(adict):
+    portfolio = adict
+
 
 response = requests.get('https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true&\
     calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50%7CSPY~100')
@@ -49,7 +56,7 @@ def getHoldings(portfolio):
 
 
 def holdings():
-    portfolio = getHoldings(bigData['holdings'])
+    portfolio = getHoldings(bigData['holdings']) ## This comes from the API
     pie(portfolio)
 
 
@@ -121,5 +128,5 @@ def assetTypes():
 
 if __name__ == '__main__':
     tablePortfolio()
-    # assetTypes()
+    assetTypes()
 

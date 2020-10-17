@@ -6,19 +6,23 @@ import datetime as dt
 """
 returning the graph for each security
 """
-ticker = "AAPL"
-performance_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
-api = requests.get(performance_data).json()
-data = api['resultMap']['RETURNS'][0]
-daily = data['returnsMap']
-day_list = sorted(daily.items())
+ticker = ""
+def initializeTicker(tick):
+    ticker = tick
+    performance_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
+    api = requests.get(performance_data).json()
+    data = api['resultMap']['RETURNS'][0]
+    daily = data['returnsMap']
+    day_list = sorted(daily.items())
+    return day_list
 
-sector = "technology"
-securities_data = 'https://www.blackrock.com/tools/hackathon/search-securities?datesAsStrings=true&query={}'.format(sector)
-apiSecurity = requests.get(securities_data).json()
-dataS = apiSecurity['resultMap']['SEARCH_RESULTS'][0]['resultList']
-sector_dict = {'tech': ['AAPL','TSLA','SNAP','LYFT']}
-sector = 'tech'
+def initializeSector(sect):
+    sector = "technology"
+    securities_data = 'https://www.blackrock.com/tools/hackathon/search-securities?datesAsStrings=true&query={}'.format(sector)
+    apiSecurity = requests.get(securities_data).json()
+    dataS = apiSecurity['resultMap']['SEARCH_RESULTS'][0]['resultList']
+    sector_dict = {'tech': ['AAPL','TSLA','SNAP','LYFT']}
+    sector = 'tech'
 
 
 def drawSectorPlots(sector_dict, sector):
@@ -52,8 +56,9 @@ def drawSectorPlots(sector_dict, sector):
     plt.show()
 
 
-def drawTickerPlots(years):
+def drawTickerPlots(years, ticker):
     # print(day_list[0])
+    day_list = initializeTicker(ticker)
     plot_len = 365*years
     if len(day_list) < plot_len:
         plot_len = len(day_list)
@@ -62,7 +67,6 @@ def drawTickerPlots(years):
     dates = []
     shortened_list = day_list[-plot_len:]
     for i in range(len(shortened_list)-1):
-        print(type(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y-%m-%d').date()))
         dates.append(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y-%m-%d').date())
     for i in range(plot_len - 1):
         levels[i] = shortened_list[i][1]['level']
@@ -72,5 +76,5 @@ def drawTickerPlots(years):
 
 
 if __name__ == '__main__':
-    drawTickerPlots(100)
-    ## drawSectorPlots(sector_dict, 'tech')
+    drawTickerPlots(100, "AAPL") ## the ticker the user wants to see.
+    ##drawSectorPlots(sector_dict, 'tech')

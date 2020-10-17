@@ -6,6 +6,7 @@ portfolioAnalysis_data = 'https://www.blackrock.com/tools/hackathon/portfolio-an
     calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50&returnAllDates=false'
 api = requests.get(portfolioAnalysis_data).json()
 
+
 data = api['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
 daily = data['returns']['returnsMap']
 lastDay = sorted(daily.items())

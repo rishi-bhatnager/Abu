@@ -35,6 +35,7 @@ def levels():
         levels[i] = lastN[i][1]['level']
     plt.plot(levels)
     plt.show()
+    plt.savefig("general.png")
 
 
 def getHoldings(portfolio):
@@ -121,5 +122,5 @@ def assetTypes():
 
 if __name__ == '__main__':
     tablePortfolio()
-    # assetTypes()
+    assetTypes()
 

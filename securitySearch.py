@@ -62,7 +62,6 @@ def drawTickerPlots(years):
     dates = []
     shortened_list = day_list[-plot_len:]
     for i in range(len(shortened_list)-1):
-        print(type(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y-%m-%d').date()))
         dates.append(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y-%m-%d').date())
     for i in range(plot_len - 1):
         levels[i] = shortened_list[i][1]['level']

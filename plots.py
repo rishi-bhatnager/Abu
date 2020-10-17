@@ -1,9 +1,6 @@
 # Script for testing the BlackRock API
 
-<<<<<<< HEAD
 import pandas as pd
-=======
->>>>>>> fc54ae492b2a4608257029ba957e2ad8083daf43
 import json
 import requests
 import numpy as np

@@ -174,7 +174,5 @@ def get_sector_rank():
     for sector,level in sectorLevels:
         print(f'Sector: {sector}, weighted yield: {level:.3f}')
 
-
-
 if __name__ == '__main__':
     get_sector_rank()

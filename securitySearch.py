@@ -48,6 +48,7 @@ def drawSectorPlots(sector_dict, sector):
         dates.append(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y-%m-%d').date())
     total_levels = total_levels/3
     plt.plot(dates, total_levels)
+    plt.title(sector.upper() + " PERFORMANCE")
     plt.show()
 
 
@@ -63,13 +64,13 @@ def drawTickerPlots(years):
     for i in range(len(shortened_list)-1):
         print(type(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y-%m-%d').date()))
         dates.append(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y-%m-%d').date())
-    print(dates)
     for i in range(plot_len - 1):
         levels[i] = shortened_list[i][1]['level']
     plt.plot(dates, levels)
+    plt.title(ticker.upper() + " PERFORMANCE")
     plt.show()
 
 
 if __name__ == '__main__':
-    # drawTickerPlots(100)
-    drawSectorPlots(sector_dict, 'tech')
+    drawTickerPlots(100)
+    ## drawSectorPlots(sector_dict, 'tech')

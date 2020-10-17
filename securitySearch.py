@@ -1,28 +1,37 @@
 import requests
 import numpy as np
 import matplotlib.pyplot as plt
+import datetime as dt
 """
 returning the graph for each security
 """
 ticker = "AAPL"
-portfolio_analysis_data = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
-    calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions={}~150%7CTSLA~50&returnAllDates=false'.format(ticker)
+portfolio_analysis_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
 api = requests.get(portfolio_analysis_data).json()
 
-data = api['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
-daily = data['returns']['returnsMap']
-lastDay = sorted(daily.items())
+data = api['resultMap']['RETURNS'][0]
+daily = data['returnsMap']
+day_list = sorted(daily.items())
 
-def drawPlots():
-    plot_len = 200
-    levels = np.ones(plot_len -1)
-    lastN = lastDay[-plot_len:]
+def drawPlots(years):
+    # print(day_list[0])
+    plot_len = 365*years
+    if len(day_list) < plot_len:
+        plot_len = len(day_list)
+
+    levels = np.ones(plot_len - 1)
+    dates = []
+    lastN = day_list[-plot_len:]
+    for i in range(len(lastN)-1):
+        print(type(dt.datetime.strptime(lastN[i][0][0:10],'%Y-%m-%d').date()))
+        dates.append(dt.datetime.strptime(lastN[i][0][0:10],'%Y-%m-%d').date())
+    print(dates)
     for i in range(plot_len - 1):
+        # print(lastN[i])
+        # dates[i] = lastN[i][0]
         levels[i] = lastN[i][1]['level']
-    plt.plot(levels)
+    plt.plot(dates, levels)
     plt.show()
 
-
-
-
-
+if __name__ == '__main__':
+    drawPlots(100)

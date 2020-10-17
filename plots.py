@@ -65,7 +65,7 @@ def trendMonths():
 
 
 def tablePortfolio():
-    from .br_api_tests import get_levels
+    from br_api_tests import get_levels
     portfolioDict = getHoldings()
     yields = get_levels(portfolioDict.keys(), retNumHoldings=False)
     print(portfolioDict)

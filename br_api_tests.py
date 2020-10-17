@@ -1,4 +1,4 @@
-S# General tests of BlackRock API, notes on capabilities
+# General tests of BlackRock API, notes on capabilities
 
 import requests, json
 

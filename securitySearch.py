@@ -31,6 +31,16 @@ def drawSectorPlots(sector_dict, sector):
         data = api['resultMap']['RETURNS']
         for security in data:
             print(security['latestPerf']['oneYear'])
+<<<<<<< HEAD
+=======
+        # print(day_list[0])
+        plot_len = 365
+        dates = []
+        for i in range(plot_len):
+            dates.append(dt.datetime.strptime(lastN[i][0][0:10],'%Y-%m-%d').date())
+        print(dates)
+
+>>>>>>> fc54ae492b2a4608257029ba957e2ad8083daf43
 
 
 def drawTickerPlots(years):

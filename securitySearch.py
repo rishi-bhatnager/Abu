@@ -6,14 +6,32 @@ import datetime as dt
 returning the graph for each security
 """
 ticker = "AAPL"
-portfolio_analysis_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
-api = requests.get(portfolio_analysis_data).json()
-
+performance_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
+api = requests.get(performance_data).json()
 data = api['resultMap']['RETURNS'][0]
 daily = data['returnsMap']
 day_list = sorted(daily.items())
 
-def drawPlots(years):
+sector = "technology"
+securities_data = 'https://www.blackrock.com/tools/hackathon/search-securities?datesAsStrings=true&query={}'.format(sector)
+apiSecurity = requests.get(securities_data).json()
+dataS = apiSecurity['resultMap']['SEARCH_RESULTS'][0]['resultList']
+sectorDict = {'tech': ['AAPL','TSLA']}
+sector = 'tech'
+
+
+def drawSectorPlots(sectorDict, sector):
+    if sector in SectorDict:
+        perf_url = 'https://www.blackrock.com/tools/hackathon/performance?identifiers='
+        for company in SectorDict[sector]:
+            perf_url += company + '%2C'
+        perf_url = perf_url[:-3]
+        print(perf_url)
+
+drawSectorPlots(sectorDict, sector)
+
+"""
+def drawTickerPlots(years):
     # print(day_list[0])
     plot_len = 365*years
     if len(day_list) < plot_len:
@@ -33,5 +51,8 @@ def drawPlots(years):
     plt.plot(dates, levels)
     plt.show()
 
-if __name__ == '__main__':
-    drawPlots(100)
+    drawTickerPlots(100)
+"""
+
+
+# if __name__ == '__main__':

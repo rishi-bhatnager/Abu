@@ -3,7 +3,7 @@
 import requests, json
 
 portfolioAnalysis_data = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
-    calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~50&returnAllDates=false'
+    calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=TSLA~100&returnAllDates=false'
 api = requests.get(portfolioAnalysis_data).json()
 
 data = api['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
@@ -15,7 +15,23 @@ lastDay = sorted(daily.items())
 #     print(lastDay[-daysBack:][i][1]['level'])
 
 expReturns = data['expectedReturns']
-print(expReturns)
+# print(expReturns)
+
+# Calculate Risk
+holdings = data['holdings']
+shares = 0
+for security in holdings:
+    shares += security['weight']
+
+portfolio_risk = data['riskData']['totalRisk']
+
+spyURL = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
+    calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=SPY~{}&returnAllDates=false'.format(shares)
+spy_data = requests.get(spyURL).json()
+spy_risk = spy_data['resultMap']['PORTFOLIOS'][0]['portfolios'][0]['riskData']['totalRisk']
+
+beta = portfolio_risk / spy_risk
+print(beta)
 
 
 '''

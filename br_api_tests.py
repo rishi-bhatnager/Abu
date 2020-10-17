@@ -87,10 +87,10 @@ def get_levels(retNumHoldings=True):
         levels: a dictionary either mapping tickers to their levels or vice versa (depending on params)
         numHoldings: the number of securities the portfolio contains (only returned if assoc. param set to True)
     '''
-    data,numHoldings = get_performanceData(data['holdings'])
+    perfData,numHoldings = get_performanceData(data['holdings'])
 
     levels = {}
-    securities = data['resultMap']['RETURNS']
+    securities = perfData['resultMap']['RETURNS']
     for security in securities:
         levels[security['ticker']] = security['latestPerf']['level']
 

@@ -4,6 +4,8 @@ import json
 import requests
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+
 
 response = requests.get('https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true&\
     calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50%7CSPY~100')
@@ -34,12 +36,19 @@ def levels():
     plt.show()
 
 
-def holdings():
-    holdings = bigData['holdings']
+def getHoldings():
+    '''
+    Returns a dict that maps tickers of holdings in current portfolio to the number of shares in the portfolio
+    '''
     portfolio = {}
-    for security in holdings:
+    for security in bigData['holdings']:
         portfolio[security['ticker']] = security['weight']
 
+    return portfolio
+
+
+def holdings():
+    portfolio = getHoldings()
     pie(portfolio)
 
 
@@ -54,6 +63,22 @@ def trendMonths():
     trendMonthPercents = {'down': returns['downMonthsPercent'], 'up': returns['upMonthsPercent'], 'nochange': returns['nochangeMonthsPercent']}
 
 
+def tablePortfolio():
+    from br_api_tests import get_levels
+    portfolioDict = getHoldings()
+    yields = get_levels(portfolioDict.keys(), retNumHoldings=False)
+    print(portfolioDict)
+    print(yields)
+    print(yields.values())
+
+
+    portfolio = {'Ticker': portfolioDict.keys(),
+            'Number of Shares': portfolioDict.values(),
+            'Yield': yields.values(),
+            }
+
+    df = pd.DataFrame(portfolio, columns=['Ticker', 'Number of Shares', 'Yield'])
+    print(df)
 
 
 def holdingsData(category):
@@ -92,4 +117,8 @@ def assetTypes():
 
 
 if __name__ == '__main__':
+    tablePortfolio()
+    """
     assetTypes()
+    """
+

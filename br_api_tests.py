@@ -3,7 +3,7 @@
 import requests, json
 
 portfolioAnalysis_data = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
-    calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=TSLA~100&returnAllDates=false'
+    calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50&returnAllDates=false'
 api = requests.get(portfolioAnalysis_data).json()
 
 data = api['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
@@ -17,21 +17,49 @@ lastDay = sorted(daily.items())
 expReturns = data['expectedReturns']
 # print(expReturns)
 
-# Calculate Risk
-holdings = data['holdings']
-shares = 0
-for security in holdings:
-    shares += security['weight']
+def get_risk():
+    # Calculate Risk
+    holdings = data['holdings']
+    shares = 0
+    for security in holdings:
+        shares += security['weight']
 
-portfolio_risk = data['riskData']['totalRisk']
+    portfolio_risk = data['riskData']['totalRisk']
 
-spyURL = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
-    calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=SPY~{}&returnAllDates=false'.format(shares)
-spy_data = requests.get(spyURL).json()
-spy_risk = spy_data['resultMap']['PORTFOLIOS'][0]['portfolios'][0]['riskData']['totalRisk']
+    spyURL = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
+        calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=SPY~{}&returnAllDates=false'.format(shares)
+    spy_data = requests.get(spyURL).json()
+    spy_risk = spy_data['resultMap']['PORTFOLIOS'][0]['portfolios'][0]['riskData']['totalRisk']
 
-beta = portfolio_risk / spy_risk
-print(beta)
+    beta = portfolio_risk / spy_risk
+    return beta
+
+def get_rank():
+    numHoldings = 0
+    perf_url = 'https://www.blackrock.com/tools/hackathon/performance?identifiers='
+    for holding in data['holdings']:
+        perf_url += holding['ticker'] + '%2C'
+        numHoldings += 1
+    perf_url = perf_url[:-3]
+    api = requests.get(perf_url).json()
+
+    # Keys are levels, values are ticker
+    levels = {}
+    securities = api['resultMap']['RETURNS']
+    for security in range(len(securities)):
+        level = securities[security]['latestPerf']['level']
+        levels[level] = securities[security]['ticker']
+
+    split = min(3, numHoldings)
+    bottomSplit = split // 2
+    topSplit = split - bottomSplit
+    topPerformers = sorted(levels.items())[-topSplit:]
+    bottomPerformers = sorted(levels.items())[:bottomSplit]
+    # print(f'Your top performers are:\n{topPerformers[0][1]} (total yield: {topPerformers[0][0]:.3f}%)')
+    # print(f'Your bottom performers are:\n{bottomPerformers[0][1]} (total yield: {bottomPerformers[0][0]:.3f}%)')
+
+get_rank()
+
 
 
 '''

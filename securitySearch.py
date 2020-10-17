@@ -16,7 +16,7 @@ sector = "technology"
 securities_data = 'https://www.blackrock.com/tools/hackathon/search-securities?datesAsStrings=true&query={}'.format(sector)
 apiSecurity = requests.get(securities_data).json()
 dataS = apiSecurity['resultMap']['SEARCH_RESULTS'][0]['resultList']
-sector_dict = {'tech': ['AAPL','TSLA']}
+sector_dict = {'tech': ['AAPL','TSLA','SNAP']}
 sector = 'tech'
 
 
@@ -26,9 +26,11 @@ def drawSectorPlots(sector_dict, sector):
         for company in sector_dict[sector]:
             url += company + '%2C'
         url = url[:-3]
-        data = requests.get(url).json()
+        api = requests.get(url).json()
+        data = api['resultMap']['RETURNS']
+        for security in data:
+            print(security['latestPerf']['oneYear'])
 
-drawSectorPlots(sector_dict, sector)
 
 def drawTickerPlots(years):
     # print(day_list[0])
@@ -52,4 +54,5 @@ def drawTickerPlots(years):
 
 
 if __name__ == '__main__':
-    drawTickerPlots(100)
+    # drawTickerPlots(100)
+    drawSectorPlots(sector_dict, sector)

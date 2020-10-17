@@ -7,7 +7,8 @@ url = 'https://pkgstore.datahub.io/core/s-and-p-500-companies-financials/constit
 sp500financials = requests.get(url).json()
 
 
-# a dict that maps to a dict that maps the ticker to each data point in the json individually
+# a dict that maps to a dict that maps the ticker to each corresponding data point in the json individually
+#   e.g. data['Names'] is a dict that maps each ticker to its full name, like data['Names']['AAPL'] = 'Apple, Inc.'
 # some columns excluded if they would change too much in the 3 months since the data was made
 data = {'Names': {}, 'Sectors': {}, 'P/E': {}, 'EPS': {}, 'MktCap': {}, 'EBITDA': {}, 'P/S': {}, 'P/B': {}}
 
@@ -24,4 +25,15 @@ for stock in sp500financials:
 
 def companiesPerSector():
     '''
-    Returns a dic
+    Returns a dictionary that maps sector names to all companies in the S&P 500 in that sector
+    The value will be a tuple of format: (ticker, market_cap)
+    '''
+    sectors = {}
+
+    for ticker,sector in data['Sectors'].items():
+        try:
+            sectors[sector].append((ticker, data['MktCap'][ticker]))
+        except KeyError:
+            sectors[sector] = [(ticker, data['MktCap'][ticker]), ]
+
+    return sectors

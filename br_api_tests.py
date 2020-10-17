@@ -21,9 +21,10 @@ print(expReturns)
 '''
 data['resultMap']['PORTFOLIOS'][0]['portfolios'][0] has the important stuff (it's a dict, see online tester for all the keys)
 Key: analyticsMap
-  includes P/E and P/B ratios, as well as returnOnAssets, returnOnEquity, twelveMonhTrailingYield
+  includes P/E and P/B ratios, as well as returnOnAssets, returnOnEquity, twelveMonthTrailingYield
 Key: expectedReturns (if that option is selected)
 Key: holdings
+    Has extra info for funds (incluing fund-specific analytics and top holdings)
 Key: returns (the bulk of the data) -- this is a dict
   Keys: downMonths, downMonthsPercent, upMonths, upMonthsPercent, nochangeMonths, nochangeMonthsPercent
   Key: latestPerf (a dict)

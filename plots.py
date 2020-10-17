@@ -122,5 +122,5 @@ def assetTypes():
 
 if __name__ == '__main__':
     tablePortfolio()
-    # assetTypes()
+    assetTypes()
 

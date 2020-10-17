@@ -192,4 +192,5 @@ def get_sector_rank():
         print(f'Sector: {sector}, weighted yield: {level:.3f}')
 
 if __name__ == '__main__':
-    get_rank()
+    # get_sector_rank()
+    print(get_rank())

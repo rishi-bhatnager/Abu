@@ -169,10 +169,10 @@ def get_sector_rank():
     sectorLevels = [(k, v) for k, v in sorted(sectorLevels.items(), key=lambda item: item[1])]
     sectorLevels.reverse()
 
-    print('Your portfolio performance by sector (sorted from top to bottom performance:')
+    print('Your portfolio performance by sector (sorted by descending average yield):')
     print('Note that yields are weighted for amount of each security invested in each sector')
     for sector,level in sectorLevels:
         print(f'Sector: {sector}, weighted yield: {level:.3f}')
 
 if __name__ == '__main__':
-    get_sector_rank()
+    get_rank()

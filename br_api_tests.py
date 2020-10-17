@@ -75,22 +75,22 @@ def get_performanceData(holdings, retNumHoldings=True):
 
 
 
-def get_levels(retNumHoldings=True):
+def get_levels(holdings, retNumHoldings=True):
     '''
     Gets the levels for each security in the portfolio
 
     Params:
-        keyTickers: if True, keys are tickers, values are levels; otherwise opposite relationship
+        holdings: the holdings to look at
         retNumHoldings: if True, returns the number of holdings in the portfolio
 
     Returns:
         levels: a dictionary either mapping tickers to their levels or vice versa (depending on params)
         numHoldings: the number of securities the portfolio contains (only returned if assoc. param set to True)
     '''
-    data,numHoldings = get_performanceData(data['holdings'])
+    perfData,numHoldings = get_performanceData(holdings)
 
     levels = {}
-    securities = data['resultMap']['RETURNS']
+    securities = perfData['resultMap']['RETURNS']
     for security in securities:
         levels[security['ticker']] = security['latestPerf']['level']
 
@@ -101,7 +101,7 @@ def get_levels(retNumHoldings=True):
 
 
 def get_rank(called_from_sector_rank=False):
-    levels,numHoldings = get_levels()
+    levels,numHoldings = get_levels(data['holdings'])
 
     # sorts levels (next line puts in order of decreasing value) into list of size-2 tuples containing the (tcker,level)
     levels = [(k, v) for k, v in sorted(levels.items(), key=lambda item: item[1])]
@@ -130,7 +130,7 @@ def get_sector_rank():
     # maps tickers to a tuple containing its level, number of shares, and sector (in that order)
     portfolio = {}
 
-    levels = get_levels(retNumHoldings=False)
+    levels = get_levels(holdings, retNumHoldings=False)
     for security in holdings:
         if security['assetType'] == 'Fund':
             sector = 'Funds'

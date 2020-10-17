@@ -24,4 +24,5 @@ for stock in sp500financials:
 
 def companiesPerSector():
     '''
-    Returns a dic
+    Returns a dictionary that maps sector names to all companies in the S&P 500 in that sector
+    '''

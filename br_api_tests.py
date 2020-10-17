@@ -1,6 +1,9 @@
 # General tests of BlackRock API, notes on capabilities
 
 import requests, json
+import pandas as pd
+
+
 
 portfolioAnalysis_data = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
     calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50&returnAllDates=false'
@@ -87,10 +90,10 @@ def get_levels(retNumHoldings=True):
         levels: a dictionary either mapping tickers to their levels or vice versa (depending on params)
         numHoldings: the number of securities the portfolio contains (only returned if assoc. param set to True)
     '''
-    data,numHoldings = get_performanceData(data['holdings'])
+    perfData,numHoldings = get_performanceData(data['holdings'])
 
     levels = {}
-    securities = data['resultMap']['RETURNS']
+    securities = perfData['resultMap']['RETURNS']
     for security in securities:
         levels[security['ticker']] = security['latestPerf']['level']
 
@@ -101,6 +104,7 @@ def get_levels(retNumHoldings=True):
 
 
 def get_rank(called_from_sector_rank=False):
+    print('fdsf')
     levels,numHoldings = get_levels()
 
     # sorts levels (next line puts in order of decreasing value) into list of size-2 tuples containing the (tcker,level)
@@ -112,14 +116,28 @@ def get_rank(called_from_sector_rank=False):
     topSplit = split - bottomSplit
     topPerformers = levels[-topSplit:]
     bottomPerformers = levels[:bottomSplit]
-    print('Your top performers are:')
+
+    #topTable = pd.DataFrame(columns=["Tick", "Yield"])
+    txt = 'Your top performers are:\n'
     for top in topPerformers:
-        print(f'Ticker: {top[0]}, total yield: {top[1]:.3f}')
-    print('Your bottom performers are:')
+        #temp = pd.DataFrame([[top[0], top[1]]], columns=["Tick", "Yield"])
+        #topTable = topTable.append(temp, ignore_index=True)
+        txt = txt + (f'Ticker: {top[0]}, total yield: {top[1]:.3f}\n')
+    txt = txt + ('Your bottom performers are:\n')
+
+    #bottable = pd.DataFrame(columns=["Tick", "Yield"])
     for bottom in bottomPerformers:
-        print(f'Ticker: {bottom[0]}, total yield: {bottom[1]:.3f}')
-
-
+        #temp = pd.DataFrame([[bottom[0], bottom[1]]], columns=["Tick", "Yield"])
+        #bottable = bottable.append(temp, ignore_index=True)
+        txt= txt + f'Ticker: {bottom[0]}, total yield: {bottom[1]:.3f}\n'
+    '''
+    resultA = topTable.to_json(orient="split")
+    parsed = json.loads(resultA)
+    print (json.dumps(parsed, indent=4))
+    print(topTable)
+    return parsed
+    '''
+    return txt
 
 def get_sector_rank():
     holdings = data['holdings']
@@ -167,4 +185,4 @@ def get_sector_rank():
 
 
 if __name__ == '__main__':
-    get_sector_rank()
+    get_rank()

@@ -10,12 +10,23 @@ data = api['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
 daily = data['returns']['returnsMap']
 lastDay = sorted(daily.items())
 
-# daysBack = 3
-# for i in range(0,daysBack):
-#     print(lastDay[-daysBack:][i][1]['level'])
+'''
+data['resultMap']['PORTFOLIOS'][0]['portfolios'][0] has the important stuff (it's a dict, see online tester for all the keys)
+Key: analyticsMap
+  includes P/E and P/B ratios, as well as returnOnAssets, returnOnEquity, twelveMonthTrailingYield
+Key: expectedReturns (if that option is selected)
+Key: holdings
+    Has extra info for funds (incluing fund-specific analytics and top holdings)
+Key: returns (the bulk of the data) -- this is a dict
+  Keys: downMonths, downMonthsPercent, upMonths, upMonthsPercent, nochangeMonths, nochangeMonthsPercent
+  Key: latestPerf (a dict)
+      Keys: sharpe ratios, risk at various time periods
+  Key: returnsMap (a dict with keys of dates in format YYYYMMDD, each date maps to )
+  Key: riskData
+      Most important key: totalRisk
+          (can query API for this value for SPY, and compare holdings' totalRisk to SPY's for a risk relative to the S&P)
+'''
 
-expReturns = data['expectedReturns']
-# print(expReturns)
 
 def get_risk():
     # Calculate Risk
@@ -34,7 +45,19 @@ def get_risk():
     beta = portfolio_risk / spy_risk
     return beta
 
-def get_rank():
+
+def get_levels(retNumHoldings=True):
+    '''
+    Gets the levels for each security in the portfolio
+
+    Params:
+        keyTickers: if True, keys are tickers, values are levels; otherwise opposite relationship
+        retNumHoldings: if True, returns the number of holdings in the portfolio
+
+    Returns:
+        levels: a dictionary either mapping tickers to their levels or vice versa (depending on params)
+        numHoldings: the number of securities the portfolio contains (only returned if assoc. param set to True)
+    '''
     numHoldings = 0
     perf_url = 'https://www.blackrock.com/tools/hackathon/performance?identifiers='
     for holding in data['holdings']:
@@ -43,38 +66,82 @@ def get_rank():
     perf_url = perf_url[:-3]
     api = requests.get(perf_url).json()
 
-    # Keys are levels, values are ticker
     levels = {}
     securities = api['resultMap']['RETURNS']
-    for security in range(len(securities)):
-        level = securities[security]['latestPerf']['level']
-        levels[level] = securities[security]['ticker']
+    for security in securities:
+        levels[security['ticker']] = security['latestPerf']['level']
+
+    if retNumHoldings:
+        return levels, numHoldings
+    else:
+        return levels
+
+
+def get_rank(called_from_sector_rank=False):
+    levels,numHoldings = get_levels()
+
+    # sorts levels (next line puts in order of decreasing value) into list of size-2 tuples containing the (tcker,level)
+    levels = [(k, v) for k, v in sorted(levels.items(), key=lambda item: item[1])]
+    # levels.reverse()
 
     split = min(3, numHoldings)
     bottomSplit = split // 2
     topSplit = split - bottomSplit
-    topPerformers = sorted(levels.items())[-topSplit:]
-    bottomPerformers = sorted(levels.items())[:bottomSplit]
-    # print(f'Your top performers are:\n{topPerformers[0][1]} (total yield: {topPerformers[0][0]:.3f}%)')
-    # print(f'Your bottom performers are:\n{bottomPerformers[0][1]} (total yield: {bottomPerformers[0][0]:.3f}%)')
+    topPerformers = levels[-topSplit:]
+    bottomPerformers = levels[:bottomSplit]
+    print('Your top performers are:')
+    for top in topPerformers:
+        print(f'Ticker: {top[0]}, total yield: {top[1]:.3f}')
+    print('Your bottom performers are:')
+    for bottom in bottomPerformers:
+        print(f'Ticker: {bottom[0]}, total yield: {bottom[1]:.3f}')
 
-get_rank()
+
+
+def get_sector_rank():
+    holdings = data['holdings']
+
+    # will map sectors to the number of shares they contain (in total)
+    sectorShares = {}
+
+    # maps tickers to a tuple containing its level, number of shares, and sector (in that order)
+    portfolio = {}
+
+    levels = get_levels(retNumHoldings=False)
+    for security in holdings:
+        if security['assetType'] == 'Fund':
+            sector = 'Funds'
+        else:
+            sector = security['gics1Sector']
+
+        shares = security['weight']
+        ticker = security['ticker']
+        portfolio[ticker] = (levels[ticker], shares, sector)
+
+        try:
+            sectorShares[sector] += shares
+        except KeyError:
+            sectorShares[sector] = shares
+
+    # maps sectors to their weighted level
+    sectorLevels = {}
+    for ticker,(level, shares, sector) in portfolio.items():
+        weightedLevel = (shares/sectorShares[sector])*level
+        try:
+            sectorLevels[sector] += weightedLevel
+        except KeyError:
+            sectorLevels[sector] = weightedLevel
+
+    # sorts sectorLevels (next line puts in order of decreasing value) into list of size-2 tuples containing the (sector,weightedLevel)
+    sectorLevels = [(k, v) for k, v in sorted(sectorLevels.items(), key=lambda item: item[1])]
+    sectorLevels.reverse()
+
+    print('Your portfolio performance by sector (sorted from top to bottom performance:')
+    print('Note that yields are weighted for amount of each security invested in each sector')
+    for sector,level in sectorLevels:
+        print(f'Sector: {sector}, weighted yield: {level:.3f}')
 
 
 
-'''
-data['resultMap']['PORTFOLIOS'][0]['portfolios'][0] has the important stuff (it's a dict, see online tester for all the keys)
-Key: analyticsMap
-  includes P/E and P/B ratios, as well as returnOnAssets, returnOnEquity, twelveMonthTrailingYield
-Key: expectedReturns (if that option is selected)
-Key: holdings
-    Has extra info for funds (incluing fund-specific analytics and top holdings)
-Key: returns (the bulk of the data) -- this is a dict
-  Keys: downMonths, downMonthsPercent, upMonths, upMonthsPercent, nochangeMonths, nochangeMonthsPercent
-  Key: latestPerf (a dict)
-      Keys: sharpe ratios, risk at various time periods
-  Key: returnsMap (a dict with keys of dates in format YYYYMMDD, each date maps to )
-  Key: riskData
-      Most important key: totalRisk
-          (can query API for this value for SPY, and compare holdings' totalRisk to SPY's for a risk relative to the S&P)
-'''
+if __name__ == '__main__':
+    get_sector_rank()

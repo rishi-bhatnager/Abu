@@ -3,6 +3,7 @@
 import requests
 import numpy as np
 import matplotlib.pyplot as plt
+import pylab
 
 response = requests.get('https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true&\
     calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50%7CSPY~100')
@@ -16,7 +17,10 @@ def pie(data):
     Creates a pie chart with the given data (a dict)
     '''
     plt.pie(data.values(),labels=data.keys(),autopct='%1.1f%%')
+
+    # must have at least one of the following commented out
     plt.show()
+    # plt.savefig('foo.png')
 
 
 def levels():
@@ -88,4 +92,4 @@ def assetTypes():
 
 
 if __name__ == '__main__':
-    industries()
+    assetTypes()

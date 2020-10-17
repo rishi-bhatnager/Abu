@@ -47,6 +47,34 @@ def get_risk():
     return beta
 
 
+
+def get_performanceData(holdings, retNumHoldings=True):
+    '''
+    Gets the Performance Data for a portfolio (i.e. the performance of each individual security in a portfolio)
+
+    Params:
+        holdings: an iterable containing tickers of the holdings of a portfolio
+        retNumHoldings: if True, returns the number of holdings in the portfolio
+
+    Returns:
+        final: a dict representing the json returned by the appropriate Performance Data API call
+        numHoldings: the number of securities the portfolio contains (only returned if assoc. param set to True)
+    '''
+    numHoldings = 0
+    perf_url = 'https://www.blackrock.com/tools/hackathon/performance?identifiers='
+    for holding in data['holdings']:
+        perf_url += holding['ticker'] + '%2C'
+        numHoldings += 1
+    perf_url = perf_url[:-3]
+    final = requests.get(perf_url).json()
+
+    if retNumHoldings:
+        return final, numHoldings
+    else:
+        return final
+
+
+
 def get_levels(retNumHoldings=True):
     '''
     Gets the levels for each security in the portfolio
@@ -59,16 +87,10 @@ def get_levels(retNumHoldings=True):
         levels: a dictionary either mapping tickers to their levels or vice versa (depending on params)
         numHoldings: the number of securities the portfolio contains (only returned if assoc. param set to True)
     '''
-    numHoldings = 0
-    perf_url = 'https://www.blackrock.com/tools/hackathon/performance?identifiers='
-    for holding in data['holdings']:
-        perf_url += holding['ticker'] + '%2C'
-        numHoldings += 1
-    perf_url = perf_url[:-3]
-    api = requests.get(perf_url).json()
+    data,numHoldings = get_performanceData(data['holdings'])
 
     levels = {}
-    securities = api['resultMap']['RETURNS']
+    securities = data['resultMap']['RETURNS']
     for security in securities:
         levels[security['ticker']] = security['latestPerf']['level']
 

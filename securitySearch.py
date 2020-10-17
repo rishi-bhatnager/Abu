@@ -1,3 +1,4 @@
+import json
 import requests
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,21 +17,22 @@ sector = "technology"
 securities_data = 'https://www.blackrock.com/tools/hackathon/search-securities?datesAsStrings=true&query={}'.format(sector)
 apiSecurity = requests.get(securities_data).json()
 dataS = apiSecurity['resultMap']['SEARCH_RESULTS'][0]['resultList']
-sectorDict = {'tech': ['AAPL','TSLA']}
+sector_dict = {'tech': ['AAPL','TSLA','SNAP']}
 sector = 'tech'
 
 
-def drawSectorPlots(sectorDict, sector):
-    if sector in SectorDict:
-        perf_url = 'https://www.blackrock.com/tools/hackathon/performance?identifiers='
-        for company in SectorDict[sector]:
-            perf_url += company + '%2C'
-        perf_url = perf_url[:-3]
-        print(perf_url)
+def drawSectorPlots(sector_dict, sector):
+    if sector in sector_dict:
+        url = 'https://www.blackrock.com/tools/hackathon/performance?identifiers='
+        for company in sector_dict[sector]:
+            url += company + '%2C'
+        url = url[:-3]
+        api = requests.get(url).json()
+        data = api['resultMap']['RETURNS']
+        for security in data:
+            print(security['latestPerf']['oneYear'])
 
-drawSectorPlots(sectorDict, sector)
 
-"""
 def drawTickerPlots(years):
     # print(day_list[0])
     plot_len = 365*years
@@ -51,8 +53,7 @@ def drawTickerPlots(years):
     plt.plot(dates, levels)
     plt.show()
 
-    drawTickerPlots(100)
-"""
 
-
-# if __name__ == '__main__':
+if __name__ == '__main__':
+    # drawTickerPlots(100)
+    drawSectorPlots(sector_dict, sector)

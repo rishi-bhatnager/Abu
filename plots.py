@@ -28,7 +28,7 @@ def pie(data):
 
 def levels():
     returnsMap = returns['returnsMap']
-    plot_len = 200
+    plot_len = min(200, len(returnsMap.keys()))
     levels = np.ones(plot_len-1)
     lastN = sorted(returnsMap.items())[-plot_len:]
     for i in range(plot_len-1):
@@ -121,6 +121,5 @@ def assetTypes():
 
 
 if __name__ == '__main__':
-    tablePortfolio()
-    assetTypes()
+    levels()
 

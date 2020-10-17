@@ -62,8 +62,8 @@ def get_performanceData(holdings, retNumHoldings=True):
     '''
     numHoldings = 0
     perf_url = 'https://www.blackrock.com/tools/hackathon/performance?identifiers='
-    for holding in data['holdings']:
-        perf_url += holding['ticker'] + '%2C'
+    for holding in holdings:
+        perf_url += holding + '%2C'
         numHoldings += 1
     perf_url = perf_url[:-3]
     final = requests.get(perf_url).json()
@@ -80,11 +80,11 @@ def get_levels(holdings, retNumHoldings=True):
     Gets the levels for each security in the portfolio
 
     Params:
-        holdings: the holdings to look at
+        holdings: an iterable containing the holdings to look at
         retNumHoldings: if True, returns the number of holdings in the portfolio
 
     Returns:
-        levels: a dictionary either mapping tickers to their levels or vice versa (depending on params)
+        levels: a dictionary mapping tickers to their levels
         numHoldings: the number of securities the portfolio contains (only returned if assoc. param set to True)
     '''
     perfData,numHoldings = get_performanceData(holdings)
@@ -100,8 +100,18 @@ def get_levels(holdings, retNumHoldings=True):
         return levels
 
 
+def getHoldingsList(holdingsData):
+    '''
+    Returns the list of tickers of holdings given the holdings as returned by Portfolio Analysis API
+    '''
+    holdings = []
+    for holding in holdingsData:
+        holdings.append(holding['ticker'])
+    return holdings
+
+
 def get_rank(called_from_sector_rank=False):
-    levels,numHoldings = get_levels(data['holdings'])
+    levels,numHoldings = get_levels(getHoldingsList(data['holdings']))
 
     # sorts levels (next line puts in order of decreasing value) into list of size-2 tuples containing the (tcker,level)
     levels = [(k, v) for k, v in sorted(levels.items(), key=lambda item: item[1])]
@@ -130,7 +140,7 @@ def get_sector_rank():
     # maps tickers to a tuple containing its level, number of shares, and sector (in that order)
     portfolio = {}
 
-    levels = get_levels(holdings, retNumHoldings=False)
+    levels = get_levels(getHoldingsList(holdings), retNumHoldings=False)
     for security in holdings:
         if security['assetType'] == 'Fund':
             sector = 'Funds'
@@ -159,12 +169,10 @@ def get_sector_rank():
     sectorLevels = [(k, v) for k, v in sorted(sectorLevels.items(), key=lambda item: item[1])]
     sectorLevels.reverse()
 
-    print('Your portfolio performance by sector (sorted from top to bottom performance:')
+    print('Your portfolio performance by sector (sorted by descending average yield):')
     print('Note that yields are weighted for amount of each security invested in each sector')
     for sector,level in sectorLevels:
         print(f'Sector: {sector}, weighted yield: {level:.3f}')
 
-
-
 if __name__ == '__main__':
-    get_sector_rank()
+    get_rank()

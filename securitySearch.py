@@ -1,4 +1,3 @@
-import json
 import requests
 import numpy as np
 import matplotlib.pyplot as plt
@@ -31,6 +30,13 @@ def drawSectorPlots(sector_dict, sector):
         data = api['resultMap']['RETURNS']
         for security in data:
             print(security['latestPerf']['oneYear'])
+        # print(day_list[0])
+        plot_len = 365
+        dates = []
+        for i in range(plot_len):
+            dates.append(dt.datetime.strptime(lastN[i][0][0:10],'%Y-%m-%d').date())
+        print(dates)
+
 
 
 def drawTickerPlots(years):

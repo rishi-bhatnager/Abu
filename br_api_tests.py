@@ -84,7 +84,7 @@ def get_levels(holdings, retNumHoldings=True):
         retNumHoldings: if True, returns the number of holdings in the portfolio
 
     Returns:
-        levels: a dictionary either mapping tickers to their levels or vice versa (depending on params)
+        levels: a dictionary mapping tickers to their levels
         numHoldings: the number of securities the portfolio contains (only returned if assoc. param set to True)
     '''
     perfData,numHoldings = get_performanceData(holdings)
@@ -99,7 +99,7 @@ def get_levels(holdings, retNumHoldings=True):
     else:
         return levels
 
-    
+
 def getHoldingsList(holdingsData):
     '''
     Returns the list of tickers of holdings given the holdings as returned by Portfolio Analysis API

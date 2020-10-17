@@ -37,19 +37,19 @@ def levels():
     plt.show()
 
 
-def getHoldings():
+def getHoldings(portfolio):
     '''
-    Returns a dict that maps tickers of holdings in current portfolio to the number of shares in the portfolio
+    Returns a dict that maps tickers of holdings in given portfolio to the number of shares in the portfolio
     '''
-    portfolio = {}
-    for security in bigData['holdings']:
-        portfolio[security['ticker']] = security['weight']
+    shares = {}
+    for security in portfolio:
+        shares[security['ticker']] = security['weight']
 
-    return portfolio
+    return shares
 
 
 def holdings():
-    portfolio = getHoldings()
+    portfolio = getHoldings(bigData['holdings'])
     pie(portfolio)
 
 
@@ -65,20 +65,22 @@ def trendMonths():
 
 
 def tablePortfolio():
+    '''
+    Makes a table summarizing the portfolio info in a Pandas DataFrame
+    '''
     from br_api_tests import get_levels
-    portfolioDict = getHoldings()
-    yields = get_levels(portfolioDict.keys(), retNumHoldings=False)
-    print(portfolioDict)
-    print(yields)
-    print(yields.values())
+    shares = getHoldings(bigData['holdings'])
+    yields = get_levels(shares.keys(), retNumHoldings=False)
+    zipped = [(ticker, shareCount, round(yields[ticker],2)) for ticker,shareCount in shares.items()]
 
 
-    portfolio = {'Ticker': portfolioDict.keys(),
-            'Number of Shares': portfolioDict.values(),
-            'Yield': yields.values(),
-            }
+    df = pd.DataFrame(zipped, columns=['Ticker', 'Shares', 'Yield'])
+    # i = 0
+    # for ticker in shares:
+    #     df[i] = [ticker, shares[ticker], yields[ticker]]
+    #     i += 1
+    df.set_index('Ticker', drop=True, inplace=True)
 
-    df = pd.DataFrame(portfolio, columns=['Ticker', 'Number of Shares', 'Yield'])
     print(df)
 
 
@@ -119,5 +121,5 @@ def assetTypes():
 
 if __name__ == '__main__':
     tablePortfolio()
-    assetTypes()
+    # assetTypes()
 

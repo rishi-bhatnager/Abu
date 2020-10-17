@@ -1,6 +1,9 @@
 # General tests of BlackRock API, notes on capabilities
 
 import requests, json
+import pandas as pd
+
+
 
 portfolioAnalysis_data = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
     calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50&returnAllDates=false'
@@ -122,14 +125,28 @@ def get_rank(called_from_sector_rank=False):
     topSplit = split - bottomSplit
     topPerformers = levels[-topSplit:]
     bottomPerformers = levels[:bottomSplit]
-    print('Your top performers are:')
+
+    #topTable = pd.DataFrame(columns=["Tick", "Yield"])
+    txt = 'Your top performers are:\n'
     for top in topPerformers:
-        print(f'Ticker: {top[0]}, total yield: {top[1]:.3f}')
-    print('Your bottom performers are:')
+        #temp = pd.DataFrame([[top[0], top[1]]], columns=["Tick", "Yield"])
+        #topTable = topTable.append(temp, ignore_index=True)
+        txt = txt + (f'Ticker: {top[0]}, total yield: {top[1]:.3f}\n')
+    txt = txt + ('Your bottom performers are:\n')
+
+    #bottable = pd.DataFrame(columns=["Tick", "Yield"])
     for bottom in bottomPerformers:
-        print(f'Ticker: {bottom[0]}, total yield: {bottom[1]:.3f}')
-
-
+        #temp = pd.DataFrame([[bottom[0], bottom[1]]], columns=["Tick", "Yield"])
+        #bottable = bottable.append(temp, ignore_index=True)
+        txt= txt + f'Ticker: {bottom[0]}, total yield: {bottom[1]:.3f}\n'
+    '''
+    resultA = topTable.to_json(orient="split")
+    parsed = json.loads(resultA)
+    print (json.dumps(parsed, indent=4))
+    print(topTable)
+    return parsed
+    '''
+    return txt
 
 def get_sector_rank():
     holdings = data['holdings']
@@ -175,4 +192,5 @@ def get_sector_rank():
         print(f'Sector: {sector}, weighted yield: {level:.3f}')
 
 if __name__ == '__main__':
-    get_rank()
+    # get_sector_rank()
+    print(get_rank())

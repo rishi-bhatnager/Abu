@@ -208,5 +208,5 @@ def webhook():
 # run the app
 if __name__ == '__main__':
     [perf, sec] = br.get_both()
-    #photos = im.upload_all()
+    photos = im.upload_all()
     app.run()

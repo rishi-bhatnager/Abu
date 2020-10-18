@@ -49,8 +49,9 @@ def generateSuggestions(risk='medium', sectors=['any',]):
         sector: list of preferred sectors, if any ('any' allows for any sector)
 
     Returns:
-        suggestions
+        a list of 3 tickers of random possible securities (of those that are deemed good)
     '''
+    risk = risk.lower()
     if risk not in ['low', 'medium', 'high']:
         raise ValueError(f'Risk must be \'low\', \'medium\', or \'high\'. Was {risk}')
 
@@ -63,39 +64,37 @@ def generateSuggestions(risk='medium', sectors=['any',]):
                 raise ValueError(f'Given sector does not exist. Given \'{sector}\'')
 
 
-
-    if risk == 'low':
-        etfs = {'General': ['SPY', 'DIA', 'QQQ'], }
-
-
-    def sortData(metric):
+    def sortData(metric, cleanNegatives=False):
         '''
         Returns a list of data sorted by the given metric
 
         Pararms:
             metric: the metric to sort by (ex: EPS). SHOULD BE SAME AS CORRESPONDING KEY IN DATA DICT
+            cleanNegatives: if True, will set negative metric values to inf
 
         Returns:
             list sorted in order of increasing metric, will be length-2 tuples of format (ticker,metric),
                 will only include stocks in given sector
         '''
-        return [(ticker,met) for ticker,met in sorted([(ticker,met) for ticker,met in data[metric].items()\
+        dataList = list(data[metric].items())
+        if cleanNegatives:
+            dataList = [(ticker,(met if met >= 0 else float('inf'))) for ticker,met in sortData(metric)]
+
+        return [(ticker,met) for ticker,met in sorted([(ticker,met) for ticker,met in dataList\
             if met is not None and data['Sectors'][ticker] in sectors],key=lambda item: item[1])]
 
-    sortedPE = sortData('P/E')
+    sortedPE = sortData('P/E', cleanNegatives=True)
     sortedEPS = sortData('EPS')
     sortedMktCap = sortData('MktCap')
-    sortedEBITDA = sortData('EBITDA')
-    sortedPS = sortData('P/S')
-    sortedPB = sortData('P/B')
+    # sortedEBITDA = sortData('EBITDA')
+    sortedPS = sortData('P/S', cleanNegatives=True)
+    # sortedPB = sortData('P/B')
 
-    # basically I'm classifying a "good" stock as one that is in the top quartile of the at least n of the above metrics,
-    #   where n = the performanceMetric specified below
-    # NOTE: market cap is not is not used as a metric to measure a "good" stock, but rather a medium vs high risk stock
-    #   medium risk stocks are in the top half of the market caps, high risk stocks are in the bottom half
-    # NOTE: EBITDA is not used for high risk, but medium risk suggestions will be in top half of EBITDA
+    # P/B or EBITDA not used for now
+    # P/E and MktCap used to measure risk
+    # EPS and P/S used to measure how good a stock is (at a basic level)
     minList,minLength = None,float('inf')
-    for dataList in [sortedPE, sortedEPS, sortedMktCap, sortedEBITDA, sortedPS, sortedPB]:
+    for dataList in [sortedPE, sortedEPS, sortedMktCap, sortedPS, ]:
         if len(dataList) < minLength:
             minLength = len(dataList)
             minList = dataList
@@ -103,18 +102,61 @@ def generateSuggestions(risk='medium', sectors=['any',]):
     bankSize = min(minLength, 150)
     prop = 1/2  # sets proportion to measure top stocks (e.g. if 1/3, will look for stocks in top third of each metric)
     top = round(bankSize*prop)
-    performanceMetric = random.choice([2,3])
+    topCriteria = random.choice([1,2]) # determines in how many metrics a stock must be in the top half of to be deemed "good"
 
-    print(sortedPE[-top:])
 
     # tickers for stocks in the top proportion of each metric
-    topPE = []
+    topHalf = len(sortedPE)//2
+    riskyPE,safePE = sortedPE[-topHalf:],sortedPE[:(len(sortedPE)-topHalf)]
 
+    topEPS = sortedEPS[-top:]
+    topPS = sortedPS[:top]
+
+    topHalf = len(sortedMktCap)//2
+    topMktCap,bottomMktCap = sortedMktCap[-topHalf:], sortedMktCap[:(len(sortedMktCap)-topHalf)]
+
+
+    riskiness = {'low': [], 'medium': [], 'high': []}
+    goodStocks = set()  # stocks are defined as good if they are in the top half of EPS and PS
     for stock,_ in minList:
-        # will count in how many metrics this stock is in the top third
-        count = 0
+        if stock in [ticker for ticker,_ in safePE] and stock in [ticker for ticker,_ in topMktCap]:
+            riskiness['low'].append(stock)
+        elif stock in [ticker for ticker,_ in riskyPE] and stock in [ticker for ticker,_ in bottomMktCap]:
+            riskiness['high'].append(stock)
+        else:
+            riskiness['medium'].append(stock)
+
+        # if int(stock in [ticker for ticker,_ in topEPS]) + int(stock in [ticker for ticker,_ in topPS]) >= topCriteria:
+        if stock in [ticker for ticker,_ in topEPS] or stock in [ticker for ticker,_ in topPS]:
+            goodStocks.add(stock)
+
+
+    possibleSecurities = [ticker for ticker,_ in riskiness[risk] if ticker in goodStocks]
+    if risk == 'low':
+        etfs = {
+            'General': ['SPY', 'DIA', 'QQQ'],
+            'Industrials': ['FIDU', 'VIS', 'IYJ', 'RGI'],
+            'Health Care': ['FHLC', 'RYH', 'XHE', 'VHT'],
+            'Information Technology': ['XSW', 'FTEC', 'RYT', 'VGT'],
+            'Consumer Discretionary': ['XLY', 'VCR', 'FXD', 'FDIS'],
+            'Utilities': ['FUTY', 'VPU', 'RYU', 'XLU'],
+            'Financials': ['FNCL', 'RYF', 'VFH', 'KIE'],
+            'Materials': ['GDX', 'GDXJ', 'XLB', 'VAW'],
+            'Real Estate': ['USRT', 'BBRE', 'FREL', 'XLRE'],
+            'Consumer Staples': ['XLP', 'VDC', 'FSTA', 'KXI'],
+            'Energy': ['XLE', 'AMLP', 'VDE', 'XOP'],
+            'Telecommunication Services': ['VOX', 'NXTG', 'FCOM', 'IYZ']}
+
+        etfsInSector = etfs['General']
+        for sector in sectors:
+            etfsInSector += etfs[sector]
+
+        possibleSecurities += etfsInSector
+
+    return random.sample(possibleSecurities, 3)
 
 
 
-generateSuggestions()
+
+generateSuggestions(risk='low', sectors=['Financials','Utilities','Energy'])
 

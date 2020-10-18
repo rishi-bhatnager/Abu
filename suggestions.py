@@ -155,3 +155,4 @@ def generateSuggestions(risk='medium', sectors=['any',]):
 
     return random.sample(possibleSecurities, 3)
 
+

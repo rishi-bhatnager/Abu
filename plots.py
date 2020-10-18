@@ -35,16 +35,16 @@ def pie(data, var):
 
     if var == 'a':
         plt.title("Breakdown by Security Type")
-        plt.savefig("byAssetType.png")
+        plt.savefig("Images/byAssetType.png")
     elif var == 'i':
         plt.title("Breakdown by Industry")
-        plt.savefig('byIndustry.png')
+        plt.savefig('Images/byIndustry.png')
     elif var == 'g':
         plt.title("Breakdown by Sector")
-        plt.savefig('bySector.png')
+        plt.savefig('Images/bySector.png')
     elif var == 'h':
         plt.title("Breakdown by Security")
-        plt.savefig("bySecurity.png")
+        plt.savefig("Images/bySecurity.png")
     plt.show()
 
 
@@ -62,7 +62,7 @@ def levels():
     plt.xlabel("Months")
     plt.ylabel("Percent Growth")
     plt.title("Portfolio Growth over Time")
-    plt.savefig("general.png")
+    plt.savefig("Images/general.png")
     plt.show()
 
 

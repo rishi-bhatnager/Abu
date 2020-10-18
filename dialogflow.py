@@ -135,7 +135,6 @@ def results():
                     "image": {
 
                         "imageUri": "https://i.imgur.com/B0r0aDA.png"
-
                         #"imageUri": photos[3]
                     },
                     "platform": "TELEGRAM"
@@ -187,11 +186,11 @@ def results():
                         #"imageUri": photos[5]
                     },
                     "platform": "TELEGRAM"
-                }
+                },
             ],
-            "fulfillmentText": "Happy to help :)"
+
         }
-        pass
+
     elif action == "asset":
         # saves parameter ticker from JSON request
         sym = req.get('queryResult').get('parameters').get('ticker')
@@ -209,5 +208,5 @@ def webhook():
 # run the app
 if __name__ == '__main__':
     [perf, sec] = br.get_both()
-    # photos = im.upload_all()
+    #photos = im.upload_all()
     app.run()

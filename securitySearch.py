@@ -52,7 +52,7 @@ def drawSectorPlots(sector):
     # Given sector dictionary and desired sector, create a plot of the overall growth of the sector
     # Based on the values of those securities
     if sector not in sector_dict:
-        return "Sector not in dictionary"
+        return "Sector not in dictionary, try another   "
 
     topNPerformers = 5
 
@@ -120,7 +120,7 @@ def drawTickerPlots(ticker):
     plt.title(ticker.upper() + " DATA")
     plt.xlabel("DATE")
     plt.ylabel("SHARE PRICE ($)")
-    plt.savefig("searchedTicker.png")  # saves plot in particular location
+    plt.savefig("Images/searchedTicker.png")  # saves plot in particular location
 
 # Main for testing
 if __name__ == '__main__':

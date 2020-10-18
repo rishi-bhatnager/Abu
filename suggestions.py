@@ -31,6 +31,7 @@ def companiesPerSector():
     sectors = {}
 
     for ticker,sector in data['Sectors'].items():
+        print(data['Sectors'])
         try:
             sectors[sector].append((ticker, data['MktCap'][ticker]))
         except KeyError:

@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 import datetime as dt
 from initPortfolio import Portfolio
 
-"""
-returning the graph for each security
-"""
+
+# Import key from Alpha Vantage
 key = "STHA8AW4L2LOMCWT"
 ticker = ""
+
 def initializeTicker(tick):
     p1 = Portfolio({"KO": 200, "REV": 259, "GM": 237})
     data = p1.perfDataCleaned
@@ -41,22 +41,22 @@ def check_data(data):
         raise ValueError("Too many API calls, did not return data")
     return data
 
-
-
 """
 This method uses the black rock API to give the top 5 performers in the a specific sector in the economy.
 Returns: A table of top 5 tickers and their respective Market Caps
 """
+
+
 def drawSectorPlots(sector):
+    plt.show()
     from suggestions import companiesPerSector
     from br_api_tests import get_performanceData
 
     sector_dict = companiesPerSector()
-    #Given sector dictionary and desired sector, create a plot of the overall growth of the sector
-    #Based on the values of those securities
+    # Given sector dictionary and desired sector, create a plot of the overall growth of the sector
+    # Based on the values of those securities
     if sector not in sector_dict:
-        raise Exception("Sector not in dictionary")
-
+        return "Sector not in dictionary, try another   "
 
     topNPerformers = 5
 
@@ -65,12 +65,12 @@ def drawSectorPlots(sector):
     sortedStocks.reverse()
     topNStocks = sortedStocks[:topNPerformers]
 
-    formatted = [(ticker, f'${int(mktCap):,}') for ticker,mktCap in topNStocks]
+    formatted = [(ticker, f'${int(mktCap):,}') for ticker, mktCap in topNStocks]
     df = pd.DataFrame(formatted, columns=['Ticker', 'Market Cap'])
     df.set_index('Ticker', drop=True, inplace=True)
-    print(f'The Top {topNPerformers} Stocks in {sector} are:\n{df}')
+    txt = f'The Top {topNPerformers} Stocks in {sector} are:\n\n{df}'
 
-
+    '''
     # calls Performance Data API on top n performers
     perfData = get_performanceData([ticker for ticker,_ in topNStocks], retNumHoldings=False)['resultMap']['RETURNS']
 
@@ -91,15 +91,22 @@ def drawSectorPlots(sector):
     total_levels /= total_levels[0]
     plt.plot(dates, total_levels)
     plt.title(sector.upper() + " PERFORMANCE")
+    plt.savefig('sectorPerformers.png')
     plt.xlabel("DATE")
     plt.ylabel("ADJUSTED RETURNS")
     plt.show()
+    '''
+    return txt
+
 
 """
 This method uses the alpha vantage API to get search for a specific ticker.
 Returns: A graph plotted for stock price vs Date since the inception of the IPO
 """
+
+
 def drawTickerPlots(ticker):
+
     price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={ticker}&apikey={key}&outputsize=full'
     price_data = check_data(requests.get(price_url).json())
 
@@ -110,11 +117,14 @@ def drawTickerPlots(ticker):
         dateList.append(dt.datetime.strptime(date, '%Y-%m-%d').date())
         closeList.append(float(price_data[date]['5. adjusted close']))
     plt.plot(dateList, closeList)
+
     plt.title(ticker.upper() + " DATA")
     plt.xlabel("DATE")
     plt.ylabel("SHARE PRICE ($)")
-    plt.show()
 
+    plt.savefig("Images/searchedTicker.png")  # saves plot in particular location
+
+# Main for testing
 if __name__ == '__main__':
-    drawTickerPlots("GE")
-    #drawSectorPlots('Health Care')
+    drawTickerPlots("AAPL")
+    # drawSectorPlots('Information Technology')

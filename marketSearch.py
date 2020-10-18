@@ -29,6 +29,15 @@ def plotMarket(tick):
         dateList.append(dt.datetime.strptime(date,'%Y-%m-%d').date())
         closeList.append(float(price_data[date]['4. close']))
     plt.plot(dateList, closeList)
+    plt.ylabel("Percent Growth")
+    plt.xlabel("Months")
+    if tick[0] == 'S':
+        plt.title('S&P 500')
+        plt.savefig('S&P.png')
+    else:
+        plt.title("Dow Jones Industrial Average")
+        plt.savefig('Dow.png')
+
     plt.show()
 
 if __name__ == '__main__':

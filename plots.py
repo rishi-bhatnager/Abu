@@ -76,10 +76,6 @@ def tablePortfolio():
 
 
     df = pd.DataFrame(zipped, columns=['Ticker', 'Shares', 'Yield'])
-    # i = 0
-    # for ticker in shares:
-    #     df[i] = [ticker, shares[ticker], yields[ticker]]
-    #     i += 1
     df.set_index('Ticker', drop=True, inplace=True)
 
     print(df)

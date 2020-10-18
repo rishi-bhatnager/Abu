@@ -7,9 +7,8 @@ import datetime as dt
 key = "STHA8AW4L2LOMCWT"
 
 def plotMarket(tick):
+    from securitySearch import check_data
     ticker = tick
-
-
     # Url to get data, other options include:
     #   * function=TIME_SERIES_DAILY_ADJUSTED for adjusted close prices (i.e. not raw data)
     #       ** there are different functions (including intraday data), see documentation for more
@@ -18,7 +17,7 @@ def plotMarket(tick):
     #   * datatype=csv outputs csv
     #       ** default is json
     price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={key}'
-    price_data = requests.get(price_url).json()
+    price_data = check_data(requests.get(price_url).json())
     # Data is a dict of many dict's (can go to url to see what the json looks like)
     # Outer dict has 2 keys: 'Meta Data' and 'Time Series (Daily)' (second key will be different for different functions used)
     # Time Series key is a dict with keys being dates
@@ -44,6 +43,3 @@ def plotMarket(tick):
 if __name__ == '__main__':
     plotMarket("SPY")
     plotMarket("DIA")
-
-
-

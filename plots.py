@@ -1,19 +1,22 @@
 # Script for testing the BlackRock API
 
-import pandas as pd
 import json
 import requests
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import datetime as dt
 
 key = "STHA8AW4L2LOMCWT"
 
 """
 adict is a dictionary of the users portfolio
 """
+
+
 def intializeApi(adict):
     portfolio = adict
+
 
 response = requests.get('https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true&\
     calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50%7CSPY~100')
@@ -26,7 +29,7 @@ def pie(data, var):
     '''
     Creates a pie chart with the given data (a dict)
     '''
-    plt.pie(data.values(),labels=data.keys(),autopct='%1.1f%%')
+    plt.pie(data.values(), labels=data.keys(), autopct='%1.1f%%')
 
     # must have at least one of the following commented out
 
@@ -44,21 +47,23 @@ def pie(data, var):
         plt.savefig("bySecurity.png")
     plt.show()
 
+
 def levels():
     returnsMap = returns['returnsMap']
     plot_len = min(200, len(returnsMap.keys()))
     levels = np.ones(plot_len - 1)
-    lastN = sorted(returnsMap.items())[-plot_len:]
+    shortened_list = sorted(returnsMap.items())[-plot_len:]
+    dates = []
     for i in range(plot_len - 1):
-        levels[i] = lastN[i][1]['level']
-    plt.plot(levels)
+        levels[i] = shortened_list[i][1]['level']
+        dates.append(dt.datetime.strptime(shortened_list[i][0][0:10], '%Y%m%d').date())
+    plt.plot(dates, levels)
 
     plt.xlabel("Months")
     plt.ylabel("Percent Growth")
     plt.title("Portfolio Growth over Time")
     plt.savefig("general.png")
     plt.show()
-
 
 
 def getHoldings(portfolio):
@@ -77,16 +82,17 @@ def holdings():
     pie(portfolio, 'h')
 
 
-
 def analyticsMap():
     analyticsMap = bigData['analyticsMap']
     stats = {}
-    for stat,data in analyticsMap:
+    for stat, data in analyticsMap:
         stats[stat] = data['harmonicMean']
+
 
 def trendMonths():
     trendMonths = {'down': returns['downMonths'], 'up': returns['upMonths'], 'nochange': returns['downMonths']}
-    trendMonthPercents = {'down': returns['downMonthsPercent'], 'up': returns['upMonthsPercent'], 'nochange': returns['nochangeMonthsPercent']}
+    trendMonthPercents = {'down': returns['downMonthsPercent'], 'up': returns['upMonthsPercent'],
+                          'nochange': returns['nochangeMonthsPercent']}
 
 
 def tablePortfolio():
@@ -96,11 +102,11 @@ def tablePortfolio():
     from br_api_tests import get_levels
     shares = getHoldings(bigData['holdings'])
     yields = get_levels(shares.keys(), retNumHoldings=False)
-    zipped = [(ticker, shareCount, round(yields[ticker],2)) for ticker,shareCount in shares.items()]
+    zipped = [(ticker, shareCount, round(yields[ticker], 2)) for ticker, shareCount in shares.items()]
     df = pd.DataFrame(zipped, columns=['Ticker', 'Shares', 'Yield'])
     df.set_index('Ticker', drop=True, inplace=True)
 
-    #print(df)
+    # print(df)
 
 
 def holdingsData(category):
@@ -118,13 +124,13 @@ def holdingsData(category):
         else:
             key = security[category]
 
-
         try:
             catCounts[key] += 1
         except KeyError:
             catCounts[key] = 1
 
     pie(catCounts, category[0])
+
 
 def portfolioSpecificData(ticker):
     price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={key}&outputsize=full'
@@ -134,12 +140,13 @@ def portfolioSpecificData(ticker):
     latest_close = float(price_data[-1][1]["4. close"])
     monthly_return = latest_close - float(price_data[-23][1]["4. close"])
     yearly_return = latest_close - float(price_data[-255][1]["4. close"])
-    df = pd.DataFrame({ "Last Close ": [latest_close],
-                        "Monthly return ": [monthly_return],
-                        "Yearly return ": [yearly_return],
-                        })
+    df = pd.DataFrame({"Last Close ": [latest_close],
+                       "Monthly return ": [monthly_return],
+                       "Yearly return ": [yearly_return],
+                       })
     df.rename(index={0: ticker}, inplace=True)
     return str(df)
+
 
 def sectors():
     holdingsData('gics1Sector')
@@ -148,13 +155,15 @@ def sectors():
 def industries():
     holdingsData('issFtse1Industry')
 
+
 def assetTypes():
     holdingsData('assetType')
 
+
 if __name__ == '__main__':
-    #tablePortfolio()
-    #assetTypes()
-    #industries()
-    #sectors()
-    #levels()
+    # tablePortfolio()
+    # assetTypes()
+    # industries()
+    # sectors()
+    # levels()
     portfolioSpecificData("TSLA")

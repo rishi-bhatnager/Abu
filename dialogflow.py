@@ -37,16 +37,17 @@ def results():
                         ]
                     },
                     "platform": "TELEGRAM"
-                
+
                 },
                 {
                     "image": {
-                        "imageUri": photos[0]
+                        "imageUri": "https://i.imgur.com/B0r0aDA.png"
+                        #"imageUri": photos[0]
                     },
                     "platform": "TELEGRAM"
                 },
                 {
-                "text": {
+                    "text": {
                         "text": [
                             "Here is the breakdown by sector: "
                         ]
@@ -55,7 +56,8 @@ def results():
                 },
                 {
                     "image": {
-                        "imageUri": photos[1]
+                        "imageUri": "https://i.imgur.com/B0r0aDA.png"
+                        #"imageUri": photos[1]
                     },
                     "platform": "TELEGRAM"
                 }
@@ -63,7 +65,7 @@ def results():
             "fulfillmentText": "Happy to help :)"
         }
     elif action == 'high-low':
-        return {'fulfillmentText': '{}'.format(txt)}
+        return {'fulfillmentText': '{}\n\n {}'.format(perf, sec)}
     elif action == 'portfolio':
         return {
 
@@ -78,28 +80,65 @@ def results():
                 },
                 {
                     "image": {
-                        "imageUri": photos[3]
+                        "imageUri": "https://i.imgur.com/B0r0aDA.png"
+                        #"imageUri": photos[3]
                     },
                     "platform": "TELEGRAM"
                 },
                 {
                     "text": {
                         "text": [
-                            "Would you like to view your top and bottom performers or see your portfolio classified?"
+                            "Would you like to search a particular asset, see top performers, or view your portfolio "
+                            "classified? "
                         ]
                     },
                     "platform": "TELEGRAM"
                 },
 
-
-
             ]
         }
 
     elif action == "marketData":
-        # show market data
-        pass
+        return {
+            "fulfillmentMessages": [
+                {
+                    "text": {
+                        "text": [
+                            "Here is the Dow's Performance over Time: "
+                        ]
+                    },
+                    "platform": "TELEGRAM"
 
+                },
+                {
+                    "image": {
+                        "imageUri": "https://i.imgur.com/B0r0aDA.png"
+                        #"imageUri": photos[4]
+                    },
+                    "platform": "TELEGRAM"
+                },
+                {
+                    "text": {
+                        "text": [
+                            "Here is S&P's Performance: "
+                        ]
+                    },
+                    "platform": "TELEGRAM"
+                },
+                {
+                    "image": {
+                        "imageUri": "https://i.imgur.com/B0r0aDA.png"
+                        #"imageUri": photos[5]
+                    },
+                    "platform": "TELEGRAM"
+                }
+            ],
+            "fulfillmentText": "Happy to help :)"
+        }
+        pass
+    elif action == "asset":
+        sym = req.get('queryResult').get('parameters').get('ticker')
+        return {'fulfillmentText': 'You do not own {}'.format(sym)}
 
 # create a route for webhook
 @app.route('/webhook', methods=['GET', 'POST'])
@@ -110,6 +149,6 @@ def webhook():
 
 # run the app
 if __name__ == '__main__':
-    txt = br.get_rank()
-    photos = im.upload_all()
+    [perf, sec] = br.get_both()
+    # photos = im.upload_all()
     app.run()

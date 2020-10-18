@@ -7,12 +7,15 @@ import datetime as dt
 """
 returning the graph for each security
 """
-ticker = "AAPL"
-performance_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
-api = requests.get(performance_data).json()
-data = api['resultMap']['RETURNS'][0]
-daily = data['returnsMap']
-day_list = sorted(daily.items())
+ticker = ""
+def initializeTicker(tick):
+    ticker = tick
+    performance_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
+    api = requests.get(performance_data).json()
+    data = api['resultMap']['RETURNS'][0]
+    daily = data['returnsMap']
+    day_list = sorted(daily.items())
+    return day_list
 
 # sector = "technology"
 # securities_data = 'https://www.blackrock.com/tools/hackathon/search-securities?datesAsStrings=true&query={}'.format(sector)
@@ -68,8 +71,9 @@ def drawSectorPlots(sector):
     plt.show()
 
 
-def drawTickerPlots(years):
+def drawTickerPlots(years, ticker):
     # print(day_list[0])
+    day_list = initializeTicker(ticker)
     plot_len = 365*years
     if len(day_list) < plot_len:
         plot_len = len(day_list)

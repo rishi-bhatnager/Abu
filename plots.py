@@ -15,27 +15,35 @@ bigData = response.json()['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
 returns = bigData['returns']
 
 
-def pie(data):
+def pie(data, var):
     '''
     Creates a pie chart with the given data (a dict)
     '''
     plt.pie(data.values(),labels=data.keys(),autopct='%1.1f%%')
 
     # must have at least one of the following commented out
-    plt.show()
-    # plt.savefig('foo.png')
 
+    if var == 'a':
+        plt.savefig("byAssetType.png")
+    elif var == 'i':
+        plt.savefig('byIndustry.png')
+    elif var == 'g':
+        plt.savefig('bySector.png')
+    elif var == 'h':
+        plt.savefig("bySecurity.png")
+    plt.show()
 
 def levels():
     returnsMap = returns['returnsMap']
-    plot_len = 200
-    levels = np.ones(plot_len-1)
+    plot_len = min(200, len(returnsMap.keys()))
+    levels = np.ones(plot_len - 1)
     lastN = sorted(returnsMap.items())[-plot_len:]
-    for i in range(plot_len-1):
+    for i in range(plot_len - 1):
         levels[i] = lastN[i][1]['level']
     plt.plot(levels)
-    plt.show()
     plt.savefig("general.png")
+    plt.show()
+
 
 
 def getHoldings(portfolio):
@@ -51,7 +59,7 @@ def getHoldings(portfolio):
 
 def holdings():
     portfolio = getHoldings(bigData['holdings'])
-    pie(portfolio)
+    pie(portfolio, 'h')
 
 
 def analyticsMap():
@@ -106,7 +114,7 @@ def holdingsData(category):
         except KeyError:
             catCounts[key] = 1
 
-    pie(catCounts)
+    pie(catCounts, category[0])
 
 
 def sectors():
@@ -123,4 +131,6 @@ def assetTypes():
 if __name__ == '__main__':
     tablePortfolio()
     assetTypes()
-
+    industries()
+    sectors()
+    levels()

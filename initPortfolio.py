@@ -22,33 +22,37 @@ class Portfolio:
         self.perfDataCleaned = self.perfData['resultMap']['RETURNS']
 
 
-    def saveData(self, dicts=['portAnalCleaned', 'perfDataCleaned'], folder='./'):
+    def saveData(self, dicts=[('portAnalCleaned', 'portAnalCleaned.json'), ('perfDataCleaned', 'perfDataCleaned.json')], folder='./'):
         '''
         Saves the given data as a json file into the specified folder
 
         Params:
-            dicts: string representataions of the names of the dictionaries to save (defaults to the cleaned data from both APIs)
+            dicts: length-2 tuples containing string representataions of the names of the dictionaries to save
+                (defaults to the cleaned data from both APIs) and preferred file names (in that order)
             folder: the folder to save the json files to (defaults to current directory)
         '''
-        for var in dicts:
+        for var,name in len(dicts):
             if var is 'portAnalCleaned':
-                fileName = 'portAnalCleaned.json'
+                fileName = name
                 data = self.portAnalCleaned
 
             elif var is 'perfDataCleaned':
-                fileName = 'perfDataCleaned.json'
+                fileName = name
                 data = self.perfDataCleaned
 
             elif var is 'portAnal':
-                fileName = 'portAnal.json'
+                fileName = name
                 data = self.portAnal
 
             elif var is 'perfData':
-                fileName = 'perfData.json'
+                fileName = name
                 data = self.perfData
 
             else:
                 raise ValueError(f'Passed in invalid argument {var} to saveData().')
+
+            if not fileName.endswith('.json'):
+                raise ValueError(f'File name must end in .json! File name received: {fileName}')
 
             with open(folder+fileName, mode='w') as out:
                 json.dump(data, out)

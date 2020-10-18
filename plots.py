@@ -21,27 +21,44 @@ bigData = response.json()['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
 returns = bigData['returns']
 
 
-def pie(data):
+def pie(data, var):
     '''
     Creates a pie chart with the given data (a dict)
     '''
     plt.pie(data.values(),labels=data.keys(),autopct='%1.1f%%')
 
     # must have at least one of the following commented out
-    plt.show()
-    # plt.savefig('foo.png')
 
+    if var == 'a':
+        plt.title("Breakdown by Security Type")
+        plt.savefig("byAssetType.png")
+    elif var == 'i':
+        plt.title("Breakdown by Industry")
+        plt.savefig('byIndustry.png')
+    elif var == 'g':
+        plt.title("Breakdown by Sector")
+        plt.savefig('bySector.png')
+    elif var == 'h':
+        plt.title("Breakdown by Security")
+        plt.savefig("bySecurity.png")
+    plt.show()
 
 def levels():
     returnsMap = returns['returnsMap']
     plot_len = min(200, len(returnsMap.keys()))
-    levels = np.ones(plot_len-1)
+    levels = np.ones(plot_len - 1)
     lastN = sorted(returnsMap.items())[-plot_len:]
-    for i in range(plot_len-1):
+    for i in range(plot_len - 1):
         levels[i] = lastN[i][1]['level']
     plt.plot(levels)
+
+    plt.xlabel("Months")
+    plt.ylabel("Percent Growth")
+    plt.title("Portfolio Growth over Time")
     plt.savefig("general.png")
     plt.show()
+
+
 
 def getHoldings(portfolio):
     '''
@@ -55,8 +72,9 @@ def getHoldings(portfolio):
 
 
 def holdings():
-    portfolio = getHoldings(bigData['holdings']) ## This comes from the API
-    pie(portfolio)
+    portfolio = getHoldings(bigData['holdings'])
+    pie(portfolio, 'h')
+
 
 
 def analyticsMap():
@@ -99,7 +117,7 @@ def holdingsData(category):
         if fundFlag and security['assetType'] == 'Fund':
             key = 'Funds'
         else:
-            key =  security[category]
+            key = security[category]
 
 
         try:
@@ -107,7 +125,7 @@ def holdingsData(category):
         except KeyError:
             catCounts[key] = 1
 
-    pie(catCounts)
+    pie(catCounts, category[0])
 
 
 def sectors():
@@ -122,7 +140,8 @@ def assetTypes():
 
 
 if __name__ == '__main__':
-    ##tablePortfolio()
+    tablePortfolio()
     assetTypes()
-    ##levels()
-
+    industries()
+    sectors()
+    levels()

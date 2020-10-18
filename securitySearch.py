@@ -7,6 +7,7 @@ import datetime as dt
 """
 returning the graph for each security
 """
+key = "STHA8AW4L2LOMCWT"
 ticker = ""
 def initializeTicker(tick):
     ticker = tick
@@ -24,6 +25,10 @@ def initializeTicker(tick):
 
 # sector = 'Industrials'
 
+"""
+This method uses the black rock API to give the top 5 performers in the a specific sector in the economy.
+Returns: A table of top 5 tickers and their respective Market Caps
+"""
 def drawSectorPlots(sector):
     from suggestions import companiesPerSector
     from br_api_tests import get_performanceData
@@ -70,26 +75,25 @@ def drawSectorPlots(sector):
     plt.title(sector.upper() + " PERFORMANCE")
     plt.show()
 
-
-def drawTickerPlots(years, ticker):
-    # print(day_list[0])
-    day_list = initializeTicker(ticker)
-    plot_len = 365*years
-    if len(day_list) < plot_len:
-        plot_len = len(day_list)
-
-    levels = np.ones(plot_len - 1)
-    dates = []
-    shortened_list = day_list[-plot_len:]
-    for i in range(len(shortened_list)-1):
-        dates.append(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y-%m-%d').date())
-    for i in range(plot_len - 1):
-        levels[i] = shortened_list[i][1]['level']
-    plt.plot(dates, levels)
-    plt.title(ticker.upper() + " PERFORMANCE")
+"""
+This method uses the alpha vantage API to get search for a specific ticker.
+Returns: A graph plotted for stock price vs Date since the inception of the IPO
+"""
+def drawTickerPlots(ticker):
+    price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={key}&outputsize=full'
+    price_data = requests.get(price_url).json()
+    price_data = price_data['Time Series (Daily)']
+    dateList = []
+    closeList = []
+    for date in price_data:
+        dateList.append(dt.datetime.strptime(date, '%Y-%m-%d').date())
+        closeList.append(float(price_data[date]['4. close']))
+    plt.plot(dateList, closeList)
     plt.show()
 
 
+
 if __name__ == '__main__':
-    # drawTickerPlots(100)
+    #drawTickerPlots("AAPL")
     drawSectorPlots('Information Technology')
+

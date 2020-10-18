@@ -3,7 +3,7 @@
 import json, requests
 
 class Portfolio:
-    def __init__(self, holdings={'AAPL': 150,'TSLA': 50,'SPY': 100}):
+    def __init__(self, holdings={'AAPL': 150,'TSLA': 50,'SPY': 100}, usePortAnal=True):
         portfolio_anlaysis = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
             calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions='
         performance_data ='https://www.blackrock.com/tools/hackathon/performance?identifiers='
@@ -15,10 +15,11 @@ class Portfolio:
         portfolio_anlaysis = portfolio_anlaysis[:-3]
         performance_data = performance_data[:-3]
 
-        self.portAnal = requests.get(portfolio_anlaysis).json()
-        self.perfData = requests.get(performance_data).json()
+        if usePortAnal:
+            self.portAnal = requests.get(portfolio_anlaysis).json()
+            self.portAnalCleaned = self.portAnal['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
 
-        self.portAnalCleaned = self.portAnal['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
+        self.perfData = requests.get(performance_data).json()
         self.perfDataCleaned = self.perfData['resultMap']['RETURNS']
 
 

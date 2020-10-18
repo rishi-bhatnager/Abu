@@ -131,7 +131,7 @@ def generateSuggestions(risk='medium', sectors=['any',]):
             goodStocks.add(stock)
 
 
-    possibleSecurities = [ticker for ticker,_ in riskiness[risk] if ticker in goodStocks]
+    possibleSecurities = [ticker for ticker in riskiness[risk] if ticker in goodStocks]
     if risk == 'low':
         etfs = {
             'General': ['SPY', 'DIA', 'QQQ'],
@@ -154,9 +154,4 @@ def generateSuggestions(risk='medium', sectors=['any',]):
         possibleSecurities += etfsInSector
 
     return random.sample(possibleSecurities, 3)
-
-
-
-
-generateSuggestions(risk='low', sectors=['Financials','Utilities','Energy'])
 

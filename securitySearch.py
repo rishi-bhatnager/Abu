@@ -4,17 +4,22 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime as dt
+from initPortfolio import Portfolio
+
 """
 returning the graph for each security
 """
 key = "STHA8AW4L2LOMCWT"
 ticker = ""
 def initializeTicker(tick):
-    ticker = tick
-    performance_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
-    api = requests.get(performance_data).json()
-    data = api['resultMap']['RETURNS'][0]
-    daily = data['returnsMap']
+    p1 = Portfolio({"KO": 200, "REV": 259, "GM": 237})
+    data = p1.perfDataCleaned
+    #performance_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
+    #api = requests.get(performance_data).json()
+    #data = api['resultMap']['RETURNS'][0]
+
+
+    daily = data[0]['returnsMap']
     day_list = sorted(daily.items())
     return day_list
 
@@ -23,7 +28,20 @@ def initializeTicker(tick):
 # apiSecurity = requests.get(securities_data).json()
 # dataS = apiSecurity['resultMap']['SEARCH_RESULTS'][0]['resultList']
 
-# sector = 'Industrials'
+def check_data(data):
+#     '''
+#     Ensures that the API call returns data (and does not return too-many-calls notice)
+#
+#     Parameters:
+#         data: the data to verify, should be a dictionary
+#
+#     Raises ValueError if API call does not return data
+#     '''
+    if 'Note' in data.keys():
+        raise ValueError("Too many API calls, did not return data")
+    return data
+
+
 
 """
 This method uses the black rock API to give the top 5 performers in the a specific sector in the economy.
@@ -69,7 +87,7 @@ def drawSectorPlots(sector):
         for n in range(plot_len):
             total_levels[n] += shortened_list[n][1]['level']*sector_dict[sector][i][1]/first_level
     for i in range(plot_len):
-        dates.append(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y%m%d').date())
+        dates.append(dt.datetime.strptime(shortened_list[i][0],'%Y%m%d').date())
     total_levels /= total_levels[0]
     plt.plot(dates, total_levels)
     plt.title(sector.upper() + " PERFORMANCE")
@@ -82,14 +100,15 @@ This method uses the alpha vantage API to get search for a specific ticker.
 Returns: A graph plotted for stock price vs Date since the inception of the IPO
 """
 def drawTickerPlots(ticker):
-    price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={key}&outputsize=full'
-    price_data = requests.get(price_url).json()
+    price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={ticker}&apikey={key}&outputsize=full'
+    price_data = check_data(requests.get(price_url).json())
+
     price_data = price_data['Time Series (Daily)']
     dateList = []
     closeList = []
     for date in price_data:
         dateList.append(dt.datetime.strptime(date, '%Y-%m-%d').date())
-        closeList.append(float(price_data[date]['4. close']))
+        closeList.append(float(price_data[date]['5. adjusted close']))
     plt.plot(dateList, closeList)
     plt.title(ticker.upper() + " DATA")
     plt.xlabel("DATE")
@@ -97,6 +116,5 @@ def drawTickerPlots(ticker):
     plt.show()
 
 if __name__ == '__main__':
-    drawTickerPlots("AAPL")
-    #drawSectorPlots('Information Technology')
-
+    #drawTickerPlots("GE")
+    drawSectorPlots('Health Care')

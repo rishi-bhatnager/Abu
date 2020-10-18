@@ -1,25 +1,25 @@
 # Script for testing the BlackRock API
-
+from initPortfolio import Portfolio
 import pandas as pd
 import json
 import requests
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import datetime as dt
 
 key = "STHA8AW4L2LOMCWT"
 
 """
 adict is a dictionary of the users portfolio
 """
-def intializeApi(adict):
-    portfolio = adict
+p1 = Portfolio({"ABM": 200, "TSLA": 400, "KO": 76})
+bigData = p1.portAnalCleaned
+#response = requests.get('https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true&\
+    #calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50%7CSPY~100')
 
-response = requests.get('https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true&\
-    calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50%7CSPY~100')
-
-bigData = response.json()['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
-returns = bigData['returns']
+#bigData = response.json()['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
+#returns = bigData['returns']
 
 
 def pie(data, var):
@@ -45,13 +45,15 @@ def pie(data, var):
     plt.show()
 
 def levels():
-    returnsMap = returns['returnsMap']
+    returnsMap = bigData['returns']['returnsMap']
     plot_len = min(200, len(returnsMap.keys()))
     levels = np.ones(plot_len - 1)
-    lastN = sorted(returnsMap.items())[-plot_len:]
+    shortened_list = sorted(returnsMap.items())[-plot_len:]
+    dates = []
     for i in range(plot_len - 1):
-        levels[i] = lastN[i][1]['level']
-    plt.plot(levels)
+        levels[i] = shortened_list[i][1]['level']
+        dates.append(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y%m%d').date())
+    plt.plot(dates, levels)
 
     plt.xlabel("Months")
     plt.ylabel("Percent Growth")
@@ -85,8 +87,8 @@ def analyticsMap():
         stats[stat] = data['harmonicMean']
 
 def trendMonths():
-    trendMonths = {'down': returns['downMonths'], 'up': returns['upMonths'], 'nochange': returns['downMonths']}
-    trendMonthPercents = {'down': returns['downMonthsPercent'], 'up': returns['upMonthsPercent'], 'nochange': returns['nochangeMonthsPercent']}
+    trendMonths = {'down': bigData['returns']['downMonths'], 'up': bigData['returns']['upMonths'], 'nochange': bigData['returns']['downMonths']}
+    trendMonthPercents = {'down': bigData['returns']['downMonthsPercent'], 'up': bigData['returns']['upMonthsPercent'], 'nochange': bigData['returns']['nochangeMonthsPercent']}
 
 
 def tablePortfolio():
@@ -152,9 +154,10 @@ def assetTypes():
     holdingsData('assetType')
 
 if __name__ == '__main__':
-    #tablePortfolio()
+    tablePortfolio()
     #assetTypes()
     #industries()
     #sectors()
     #levels()
-    portfolioSpecificData("TSLA")
+    #portfolioSpecificData("TSLA")
+

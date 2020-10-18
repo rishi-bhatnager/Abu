@@ -50,7 +50,6 @@ def get_risk():
     return beta
 
 
-
 def get_performanceData(holdings, retNumHoldings=True):
     '''
     Gets the Performance Data for a portfolio (i.e. the performance of each individual security in a portfolio)

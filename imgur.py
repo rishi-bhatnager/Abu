@@ -21,4 +21,3 @@ def upload_all():
     for a in arr:
         holder.append(upload_image(a))
     return holder
-

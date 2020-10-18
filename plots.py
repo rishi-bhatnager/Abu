@@ -7,6 +7,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+"""
+adict is a dictionary of the users portfolio
+"""
+def intializeApi(adict):
+    portfolio = adict
+
 
 response = requests.get('https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true&\
     calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50%7CSPY~100')
@@ -45,6 +51,7 @@ def levels():
     for i in range(plot_len - 1):
         levels[i] = lastN[i][1]['level']
     plt.plot(levels)
+
     plt.xlabel("Months")
     plt.ylabel("Percent Growth")
     plt.title("Portfolio Growth over Time")
@@ -69,6 +76,7 @@ def holdings():
     pie(portfolio, 'h')
 
 
+
 def analyticsMap():
     analyticsMap = bigData['analyticsMap']
     stats = {}
@@ -91,10 +99,6 @@ def tablePortfolio():
 
 
     df = pd.DataFrame(zipped, columns=['Ticker', 'Shares', 'Yield'])
-    # i = 0
-    # for ticker in shares:
-    #     df[i] = [ticker, shares[ticker], yields[ticker]]
-    #     i += 1
     df.set_index('Ticker', drop=True, inplace=True)
 
     print(df)
@@ -113,7 +117,7 @@ def holdingsData(category):
         if fundFlag and security['assetType'] == 'Fund':
             key = 'Funds'
         else:
-            key =  security[category]
+            key = security[category]
 
 
         try:

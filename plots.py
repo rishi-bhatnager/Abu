@@ -49,6 +49,9 @@ def pie(data, var):
 
 
 def levels():
+    '''
+    Creates a line graph of porfolio return over the last 200 days
+    '''
     returnsMap = returns['returnsMap']
     plot_len = min(200, len(returnsMap.keys()))
     levels = np.ones(plot_len - 1)

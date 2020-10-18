@@ -101,7 +101,7 @@ def tablePortfolio():
     df = pd.DataFrame(zipped, columns=['Ticker', 'Shares', 'Yield'])
     df.set_index('Ticker', drop=True, inplace=True)
 
-    print(df)
+    #print(df)
 
 
 def holdingsData(category):

@@ -3,12 +3,9 @@
 import requests, json
 import pandas as pd
 
-
-
 portfolioAnalysis_data = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
     calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50&returnAllDates=false'
 api = requests.get(portfolioAnalysis_data).json()
-
 
 data = api['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
 daily = data['returns']['returnsMap']
@@ -42,13 +39,13 @@ def get_risk():
     portfolio_risk = data['riskData']['totalRisk']
 
     spyURL = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
-        calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=SPY~{}&returnAllDates=false'.format(shares)
+        calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=SPY~{}&returnAllDates=false'.format(
+        shares)
     spy_data = requests.get(spyURL).json()
     spy_risk = spy_data['resultMap']['PORTFOLIOS'][0]['portfolios'][0]['riskData']['totalRisk']
 
     beta = portfolio_risk / spy_risk
     return beta
-
 
 
 def get_performanceData(holdings, retNumHoldings=True):
@@ -77,7 +74,6 @@ def get_performanceData(holdings, retNumHoldings=True):
         return final
 
 
-
 def get_levels(holdings, retNumHoldings=True):
     '''
     Gets the levels for each security in the portfolio
@@ -90,7 +86,7 @@ def get_levels(holdings, retNumHoldings=True):
         levels: a dictionary mapping tickers to their levels
         numHoldings: the number of securities the portfolio contains (only returned if assoc. param set to True)
     '''
-    perfData,numHoldings = get_performanceData(holdings)
+    perfData, numHoldings = get_performanceData(holdings)
 
     levels = {}
     securities = perfData['resultMap']['RETURNS']
@@ -114,7 +110,7 @@ def getHoldingsList(holdingsData):
 
 
 def get_rank(called_from_sector_rank=False):
-    levels,numHoldings = get_levels(getHoldingsList(data['holdings']))
+    levels, numHoldings = get_levels(getHoldingsList(data['holdings']))
 
     # sorts levels (next line puts in order of decreasing value) into list of size-2 tuples containing the (tcker,level)
     levels = [(k, v) for k, v in sorted(levels.items(), key=lambda item: item[1])]
@@ -126,19 +122,19 @@ def get_rank(called_from_sector_rank=False):
     topPerformers = levels[-topSplit:]
     bottomPerformers = levels[:bottomSplit]
 
-    #topTable = pd.DataFrame(columns=["Tick", "Yield"])
+    # topTable = pd.DataFrame(columns=["Tick", "Yield"])
     txt = 'Your top performers are:\n'
     for top in topPerformers:
-        #temp = pd.DataFrame([[top[0], top[1]]], columns=["Tick", "Yield"])
-        #topTable = topTable.append(temp, ignore_index=True)
+        # temp = pd.DataFrame([[top[0], top[1]]], columns=["Tick", "Yield"])
+        # topTable = topTable.append(temp, ignore_index=True)
         txt = txt + (f'Ticker: {top[0]}, total yield: {top[1]:.3f}\n')
-    txt = txt + ('Your bottom performers are:\n')
+    txt = txt + ('\nYour bottom performers are:\n')
 
-    #bottable = pd.DataFrame(columns=["Tick", "Yield"])
+    # bottable = pd.DataFrame(columns=["Tick", "Yield"])
     for bottom in bottomPerformers:
-        #temp = pd.DataFrame([[bottom[0], bottom[1]]], columns=["Tick", "Yield"])
-        #bottable = bottable.append(temp, ignore_index=True)
-        txt= txt + f'Ticker: {bottom[0]}, total yield: {bottom[1]:.3f}\n'
+        # temp = pd.DataFrame([[bottom[0], bottom[1]]], columns=["Tick", "Yield"])
+        # bottable = bottable.append(temp, ignore_index=True)
+        txt = txt + f'Ticker: {bottom[0]}, total yield: {bottom[1]:.3f}\n'
     '''
     resultA = topTable.to_json(orient="split")
     parsed = json.loads(resultA)
@@ -147,6 +143,7 @@ def get_rank(called_from_sector_rank=False):
     return parsed
     '''
     return txt
+
 
 def get_sector_rank():
     holdings = data['holdings']
@@ -175,8 +172,8 @@ def get_sector_rank():
 
     # maps sectors to their weighted level
     sectorLevels = {}
-    for ticker,(level, shares, sector) in portfolio.items():
-        weightedLevel = (shares/sectorShares[sector])*level
+    for ticker, (level, shares, sector) in portfolio.items():
+        weightedLevel = (shares / sectorShares[sector]) * level
         try:
             sectorLevels[sector] += weightedLevel
         except KeyError:
@@ -188,8 +185,9 @@ def get_sector_rank():
 
     print('Your portfolio performance by sector (sorted by descending average yield):')
     print('Note that yields are weighted for amount of each security invested in each sector')
-    for sector,level in sectorLevels:
+    for sector, level in sectorLevels:
         print(f'Sector: {sector}, weighted yield: {level:.3f}')
+
 
 if __name__ == '__main__':
     # get_sector_rank()

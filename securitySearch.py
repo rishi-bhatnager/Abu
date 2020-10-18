@@ -116,5 +116,5 @@ def drawTickerPlots(ticker):
     plt.show()
 
 if __name__ == '__main__':
-    #drawTickerPlots("GE")
-    drawSectorPlots('Health Care')
+    drawTickerPlots("GE")
+    #drawSectorPlots('Health Care')

@@ -123,18 +123,18 @@ def get_rank(called_from_sector_rank=False):
     bottomPerformers = levels[:bottomSplit]
 
     # topTable = pd.DataFrame(columns=["Tick", "Yield"])
-    txt = 'Your top performers are:\n'
+    txt = 'Your top performers:\n'
     for top in topPerformers:
         # temp = pd.DataFrame([[top[0], top[1]]], columns=["Tick", "Yield"])
         # topTable = topTable.append(temp, ignore_index=True)
-        txt = txt + (f'Ticker: {top[0]}, total yield: {top[1]:.3f}\n')
-    txt = txt + ('\nYour bottom performers are:\n')
+        txt = txt + (f'{top[0]}, total yield: {top[1]:.3f}\n')
+    txt = txt + ('\nYour bottom performers:\n')
 
     # bottable = pd.DataFrame(columns=["Tick", "Yield"])
     for bottom in bottomPerformers:
         # temp = pd.DataFrame([[bottom[0], bottom[1]]], columns=["Tick", "Yield"])
         # bottable = bottable.append(temp, ignore_index=True)
-        txt = txt + f'Ticker: {bottom[0]}, total yield: {bottom[1]:.3f}\n'
+        txt = txt + f'{bottom[0]}, total yield: {bottom[1]:.3f}\n'
     '''
     resultA = topTable.to_json(orient="split")
     parsed = json.loads(resultA)
@@ -182,12 +182,14 @@ def get_sector_rank():
     # sorts sectorLevels (next line puts in order of decreasing value) into list of size-2 tuples containing the (sector,weightedLevel)
     sectorLevels = [(k, v) for k, v in sorted(sectorLevels.items(), key=lambda item: item[1])]
     sectorLevels.reverse()
+    txt = 'Your top performing sectors:\n'
 
-    print('Your portfolio performance by sector (sorted by descending average yield):')
-    print('Note that yields are weighted for amount of each security invested in each sector')
     for sector, level in sectorLevels:
-        print(f'Sector: {sector}, weighted yield: {level:.3f}')
+        txt = txt + (f'{sector}, weighted yield: {level:.3f}\n')
+    return txt
 
+def get_both():
+    return [get_rank(), get_sector_rank()]
 
 if __name__ == '__main__':
     # get_sector_rank()

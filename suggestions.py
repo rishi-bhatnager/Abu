@@ -32,7 +32,6 @@ def companiesPerSector():
     sectors = {}
 
     for ticker,sector in data['Sectors'].items():
-
         try:
             sectors[sector].append((ticker, data['MktCap'][ticker]))
         except KeyError:
@@ -127,8 +126,7 @@ def generateSuggestions(risk='medium', sectors=['any',]):
         else:
             riskiness['medium'].append(stock)
 
-        # if int(stock in [ticker for ticker,_ in topEPS]) + int(stock in [ticker for ticker,_ in topPS]) >= topCriteria:
-        if stock in [ticker for ticker,_ in topEPS] or stock in [ticker for ticker,_ in topPS]:
+        if int(stock in [ticker for ticker,_ in topEPS]) + int(stock in [ticker for ticker,_ in topPS]) >= topCriteria:
             goodStocks.add(stock)
 
 
@@ -154,6 +152,7 @@ def generateSuggestions(risk='medium', sectors=['any',]):
 
         possibleSecurities += etfsInSector
 
-    return random.sample(possibleSecurities, 3)
+    return random.sample(possibleSecurities, min(len(possibleSecurities), 3))
 
-
+if __name__ == '__main__':
+    print(generateSuggestions(risk='high', sectors=['Telecommunication Services']))

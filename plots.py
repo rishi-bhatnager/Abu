@@ -101,8 +101,8 @@ def tablePortfolio():
     zipped = [(ticker, shareCount, round(yields[ticker], 2)) for ticker, shareCount in shares.items()]
     df = pd.DataFrame(zipped, columns=['Ticker', 'Shares', 'Yield'])
     df.set_index('Ticker', drop=True, inplace=True)
-
     return str(df)
+    # print(df)
 
 
 def holdingsData(category):
@@ -141,7 +141,7 @@ def portfolioSpecificData(ticker):
                        "Yearly return ": [yearly_return],
                        })
     df.rename(index={0: ticker}, inplace=True)
-    return str(df)
+    return df
 
 
 def sectors():
@@ -157,11 +157,9 @@ def assetTypes():
 
 
 if __name__ == '__main__':
-     tablePortfolio()
-     # assetTypes()
-     # industries()
-     # sectors()
-     # levels()
-    #print(portfolioSpecificData("TSLA"))
-    #trendMonths()
-
+    print(tablePortfolio())
+    # assetTypes()
+    # industries()
+    # sectors()
+    # levels()
+    # portfolioSpecificData("TSLA")

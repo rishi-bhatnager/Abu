@@ -109,7 +109,6 @@ def drawTickerPlots(ticker):
 
     price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={ticker}&apikey={key}&outputsize=full'
     price_data = check_data(requests.get(price_url).json())
-
     price_data = price_data['Time Series (Daily)']
     dateList = []
     closeList = []

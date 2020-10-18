@@ -38,7 +38,6 @@ def drawSectorPlots(sector):
     #Given sector dictionary and desired sector, create a plot of the overall growth of the sector
     #Based on the values of those securities
     if sector not in sector_dict:
-        raise Exception()
         return "Sector not in dictionary"
 
 

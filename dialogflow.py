@@ -40,6 +40,15 @@ def results():
                         "imageUri": im.upload_image('searchedTicker.png')
                     },
                     "platform": "TELEGRAM"
+                },
+                {
+                    "text": {
+                        "text": [
+                            "Enter another or enter 'Main menu' to return"
+                        ]
+                    },
+                    "platform": "TELEGRAM"
+
                 }
         ]
         }

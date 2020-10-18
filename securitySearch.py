@@ -87,10 +87,7 @@ def drawSectorPlots(sector):
     total_levels /= total_levels[0]
     plt.plot(dates, total_levels)
     plt.title(sector.upper() + " PERFORMANCE")
-<<<<<<< HEAD
     plt.savefig('sectorPerformers.png')
-=======
->>>>>>> 0ac0dd0bf308507d904ad5ecc7a36732529340bc
     plt.xlabel("DATE")
     plt.ylabel("ADJUSTED RETURNS")
     plt.show()

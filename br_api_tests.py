@@ -12,10 +12,8 @@ from initPortfolio import Portfolio
 
 # data = api['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
 port = Portfolio(holdings={"ABM": 200, "TSLA": 400, "KO": 76, "GE": 58, "GM": 79,
-                    "AAPL": 200, "NCR" : 350, "NOK": 21, "QSR" : 240, "T" : 58,
-                    "TAK" : 79, "SPY": 721, "DIA": 270, "FNCL": 32, "F":90,
-                    "MMM" : 78, "HON" : 92, "UPS": 68, "UHS": 78, "V": 200, "BLL": 53,
-                    "KI": 520, "M": 63, "TAP": 46, "MNST": 79, "NOV": 10})
+                    "AAPL": 200, "NCR" : 350, "NOK": 21, "QSR" : 240, "MMM" : 58,
+                    "TAK" : 79, "SPY": 721, "DIA": 270, "FNCL": 32, "F":90})
 data = port.portAnalCleaned
 daily = data['returns']['returnsMap']
 lastDay = sorted(daily.items())
@@ -96,9 +94,9 @@ def get_levels(holdings, retNumHoldings=True):
     levels = {}
     securities = perfData['resultMap']['RETURNS']
     for security in securities:
-        try:
+        if 'ticker' in security.keys():
             levels[security['ticker']] = security['latestPerf']['level']
-        except KeyError:
+        else:
             levels[security['uniqueId']] = security['latestPerf']['level']
 
     if retNumHoldings:

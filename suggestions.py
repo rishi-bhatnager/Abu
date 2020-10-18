@@ -1,6 +1,7 @@
 import json
 import requests
 import random
+import pandas as pd
 
 # sp500financials will be a list of 505 dictionaries
 # NOTE: THIS DATA IS 3 MONTHS OLD (source: https://datahub.io/core/s-and-p-500-companies-financials#python)
@@ -152,9 +153,37 @@ def generateSuggestions(risk='medium', sectors=['any',]):
 
         possibleSecurities += etfsInSector
 
-    return random.sample(possibleSecurities, min(len(possibleSecurities), 3))
+    suggestions = random.sample(possibleSecurities, min(len(possibleSecurities), 3))
+    result = f'Given your preference for {risk} risk securities, I have looked for '
+    if risk == 'low':
+        result += 'ETFs as well as stocks with a high market cap and low P/E ratio.'
+    else:
+        result += f'stocks with a {"low" if risk == "high" else risk} market cap and a {risk} P/E ratio.'
+    result += '\nI have also filtered out bad stocks (based on their EPS and P/S ratio).\nHere is what I suggest:'
+
+
+    df = pd.DataFrame(columns=['Ticker', 'MktCap', 'EPS'])
+    for i in range(len(suggestions)):
+        suggestion = suggestions[i]
+        toAdd = {'Ticker': suggestion}
+        for info,vals in data.items():
+            if info in df.columns.values:
+                try:
+                    if info == 'MktCap':
+                        toAdd[info] = f'${int(vals[suggestion]):,}'
+                    else:
+                        toAdd[info] = vals[suggestion]
+                except KeyError:
+                    toAdd[info] = 'N/A'
+        df.loc[i] = toAdd
+
+    df.index += 1
+
+    return result,str(df)
+
+
 
 if __name__ == '__main__':
-    # print(generateSuggestions(risk='high', sectors=['Telecommunication Services']))
-    for sector,companies in companiesPerSector().items():
-        print(f'{sector}: {companies}', end='\n\n\n')
+    print('\n'.join(generateSuggestions('medium')))
+    # for sector,companies in companiesPerSector().items():
+    #     print(f'{sector}: {companies}', end='\n\n\n')

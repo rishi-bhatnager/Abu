@@ -97,8 +97,8 @@ def results():
                 {
                     "image": {
 
-                        "imageUri": "https://scontent-atl3-1.xx.fbcdn.net/v/t1.0-9/117774336_1044925022589847_8385272999349051066_n.jpg?_nc_cat=106&_nc_sid=85a577&_nc_ohc=J0wuYDR4fbYAX-U8UoN&_nc_ht=scontent-atl3-1.xx&oh=174104f237bbd56f3c35ff28b8120d92&oe=5FAF8958"
-                        #"imageUri": photos[0]
+                        #"imageUri": "https://scontent-atl3-1.xx.fbcdn.net/v/t1.0-9/117774336_1044925022589847_8385272999349051066_n.jpg?_nc_cat=106&_nc_sid=85a577&_nc_ohc=J0wuYDR4fbYAX-U8UoN&_nc_ht=scontent-atl3-1.xx&oh=174104f237bbd56f3c35ff28b8120d92&oe=5FAF8958"
+                        "imageUri": photos[0]
                     },
                     "platform": "TELEGRAM"
                 },
@@ -113,8 +113,8 @@ def results():
                 {
                     "image": {
 
-                        "imageUri": "https://i.imgur.com/B0r0aDA.png"
-                        #"imageUri": photos[1]
+                        #"imageUri": "https://i.imgur.com/B0r0aDA.png"
+                        "imageUri": photos[2]
                     },
                     "platform": "TELEGRAM"
                 }
@@ -233,9 +233,11 @@ def results():
     elif action == "suggest":
         risk = req.get('queryResult').get('parameters').get('risk').strip().lower()
         sect = req.get('queryResult').get('parameters').get('sector')
-        print(risk)
-        txt = 'Given your desire to take {} risk in the given sectors, we suggest these options: \n'.format(risk)
-        txt = txt + ', '.join(sugg.generateSuggestions(risk, sect))
+        # txt = 'Given your desire to take {} risk in the given sectors, we suggest these options: \n'.format(risk)
+        if len(sect) > 0:
+            txt = '\n'.join(sugg.generateSuggestions(risk, sect))
+        else:
+            txt = '\n'.join(sugg.generateSuggestions(risk))
         return {'fulfillmentText': txt}
 
 # create a route for webhook

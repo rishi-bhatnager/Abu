@@ -24,12 +24,16 @@ def pie(data, var):
     # must have at least one of the following commented out
 
     if var == 'a':
+        plt.title("Breakdown by Security Type")
         plt.savefig("byAssetType.png")
     elif var == 'i':
+        plt.title("Breakdown by Industry")
         plt.savefig('byIndustry.png')
     elif var == 'g':
+        plt.title("Breakdown by Sector")
         plt.savefig('bySector.png')
     elif var == 'h':
+        plt.title("Breakdown by Security")
         plt.savefig("bySecurity.png")
     plt.show()
 
@@ -41,6 +45,9 @@ def levels():
     for i in range(plot_len - 1):
         levels[i] = lastN[i][1]['level']
     plt.plot(levels)
+    plt.xlabel("Months")
+    plt.ylabel("Percent Growth")
+    plt.title("Portfolio Growth over Time")
     plt.savefig("general.png")
     plt.show()
 

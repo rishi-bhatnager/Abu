@@ -71,7 +71,7 @@ def results():
                 {
                     "text": {
                         "text": [
-                            "Here are histrical returns from your portfolio"
+                            "Here are historical returns from your portfolio "
                         ]
                     },
                     "platform": "TELEGRAM"

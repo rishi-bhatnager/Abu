@@ -34,14 +34,14 @@ def pie(data):
 
 def levels():
     returnsMap = returns['returnsMap']
-    plot_len = 200
+    plot_len = min(200, len(returnsMap.keys()))
     levels = np.ones(plot_len-1)
     lastN = sorted(returnsMap.items())[-plot_len:]
     for i in range(plot_len-1):
         levels[i] = lastN[i][1]['level']
     plt.plot(levels)
+    plt.savefig("general.png")
     plt.show()
-
 
 def getHoldings(portfolio):
     '''
@@ -81,10 +81,6 @@ def tablePortfolio():
 
 
     df = pd.DataFrame(zipped, columns=['Ticker', 'Shares', 'Yield'])
-    # i = 0
-    # for ticker in shares:
-    #     df[i] = [ticker, shares[ticker], yields[ticker]]
-    #     i += 1
     df.set_index('Ticker', drop=True, inplace=True)
 
     print(df)

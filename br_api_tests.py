@@ -79,11 +79,11 @@ def get_levels(holdings, retNumHoldings=True):
     Gets the levels for each security in the portfolio
 
     Params:
-        holdings: an iterable containing the holdings to look at
+        holdings: an iterable containing the holdings to look at (list of securities)
         retNumHoldings: if True, returns the number of holdings in the portfolio
 
     Returns:
-        levels: a dictionary mapping tickers to their levels
+        levels: a dictionary mapping tickers to their levels (yield)
         numHoldings: the number of securities the portfolio contains (only returned if assoc. param set to True)
     '''
     perfData, numHoldings = get_performanceData(holdings)

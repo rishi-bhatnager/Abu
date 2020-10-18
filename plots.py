@@ -97,8 +97,6 @@ def tablePortfolio():
     shares = getHoldings(bigData['holdings'])
     yields = get_levels(shares.keys(), retNumHoldings=False)
     zipped = [(ticker, shareCount, round(yields[ticker],2)) for ticker,shareCount in shares.items()]
-
-#in between shares and yield - last close; how much money they have gained or lost on tha
     df = pd.DataFrame(zipped, columns=['Ticker', 'Shares', 'Yield'])
     df.set_index('Ticker', drop=True, inplace=True)
 
@@ -133,21 +131,15 @@ def portfolioSpecificData(ticker):
     price_data = requests.get(price_url).json()
     price_data = price_data['Time Series (Daily)']
     price_data = sorted(price_data.items())
-    latest_close = price_data[-1][1]["4. close"]
-    print(price_data)
-
-    """
-    df = pd.DataFrame({ "Last Close " : latest_close,
-                        "Monthly return " : 
-                        "Yearly return " :
+    latest_close = float(price_data[-1][1]["4. close"])
+    monthly_return = latest_close - float(price_data[-23][1]["4. close"])
+    yearly_return = latest_close - float(price_data[-255][1]["4. close"])
+    df = pd.DataFrame({ "Last Close ": [latest_close],
+                        "Monthly return ": [monthly_return],
+                        "Yearly return ": [yearly_return],
                         })
-
-    #last close, money made, lost
-    """
-
-
-
-
+    df.rename(index={0: ticker}, inplace=True)
+    print(df)
 
 def sectors():
     holdingsData('gics1Sector')
@@ -158,7 +150,6 @@ def industries():
 
 def assetTypes():
     holdingsData('assetType')
-
 
 if __name__ == '__main__':
     #tablePortfolio()

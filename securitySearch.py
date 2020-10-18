@@ -91,7 +91,7 @@ def drawTickerPlots(ticker):
         dateList.append(dt.datetime.strptime(date, '%Y-%m-%d').date())
         closeList.append(float(price_data[date]['4. close']))
     plt.plot(dateList, closeList)
-    plt.title(ticker.upper() + "DATA")
+    plt.title(ticker.upper() + " DATA")
     plt.xlabel("DATE")
     plt.ylabel("SHARE PRICE ($)")
     plt.show()

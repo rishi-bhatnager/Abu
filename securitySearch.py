@@ -24,7 +24,20 @@ def initializeTicker(tick):
 # apiSecurity = requests.get(securities_data).json()
 # dataS = apiSecurity['resultMap']['SEARCH_RESULTS'][0]['resultList']
 
-# sector = 'Industrials'
+def check_data(data):
+#     '''
+#     Ensures that the API call returns data (and does not return too-many-calls notice)
+#
+#     Parameters:
+#         data: the data to verify, should be a dictionary
+#
+#     Raises ValueError if API call does not return data
+#     '''
+    if 'Note' in data.keys():
+        raise ValueError("Too many API calls, did not return data")
+    return data
+
+
 
 """
 This method uses the black rock API to give the top 5 performers in the a specific sector in the economy.
@@ -84,7 +97,8 @@ Returns: A graph plotted for stock price vs Date since the inception of the IPO
 """
 def drawTickerPlots(ticker):
     price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={ticker}&apikey={key}&outputsize=full'
-    price_data = requests.get(price_url).json()
+    price_data = check_data(requests.get(price_url).json())
+
     price_data = price_data['Time Series (Daily)']
     dateList = []
     closeList = []
@@ -95,7 +109,6 @@ def drawTickerPlots(ticker):
     plt.show()
 
 
-
 if __name__ == '__main__':
-    # drawTickerPlots("AAPL")
-    drawSectorPlots('Information Technology')
+    drawTickerPlots("AAPL")
+    # drawSectorPlots('Information Technology')

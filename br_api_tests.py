@@ -2,12 +2,19 @@
 
 import requests, json
 import pandas as pd
+from initPortfolio import Portfolio
 
-portfolioAnalysis_data = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
-    calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50&returnAllDates=false'
-api = requests.get(portfolioAnalysis_data).json()
 
-data = api['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
+# portfolioAnalysis_data = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
+#     calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50&returnAllDates=false'
+# api = requests.get(portfolioAnalysis_data).json()
+
+
+# data = api['resultMap']['PORTFOLIOS'][0]['portfolios'][0]
+port = Portfolio(holdings={"ABM": 200, "TSLA": 400, "KO": 76, "GE": 58, "GM": 79,
+                    "AAPL": 200, "NCR" : 350, "NOK": 21, "QSR" : 240, "MMM" : 58,
+                    "TAK" : 79, "SPY": 721, "DIA": 270, "FNCL": 32, "F":90})
+data = port.portAnalCleaned
 daily = data['returns']['returnsMap']
 lastDay = sorted(daily.items())
 
@@ -87,7 +94,10 @@ def get_levels(holdings, retNumHoldings=True):
     levels = {}
     securities = perfData['resultMap']['RETURNS']
     for security in securities:
-        levels[security['ticker']] = security['latestPerf']['level']
+        if 'ticker' in security.keys():
+            levels[security['ticker']] = security['latestPerf']['level']
+        else:
+            levels[security['uniqueId']] = security['latestPerf']['level']
 
     if retNumHoldings:
         return levels, numHoldings
@@ -188,5 +198,4 @@ def get_both():
     return [get_rank(), get_sector_rank()]
 
 if __name__ == '__main__':
-    # get_sector_rank()
-    print(get_rank())
+    print(get_both())

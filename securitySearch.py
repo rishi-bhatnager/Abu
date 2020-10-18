@@ -12,7 +12,10 @@ key = "STHA8AW4L2LOMCWT"
 ticker = ""
 
 def initializeTicker(tick):
-    p1 = Portfolio({"KO": 200, "REV": 259, "GM": 237})
+    # p1 = Portfolio({"KO": 200, "REV": 259, "GM": 237})
+    p1 = Portfolio(holdings={"ABM": 200, "TSLA": 400, "KO": 76, "GE": 58, "GM": 79,
+                    "AAPL": 200, "NCR" : 350, "NOK": 21, "QSR" : 240, "MMM" : 58,
+                    "TAK" : 79, "SPY": 721, "DIA": 270, "FNCL": 32, "F":90})
     data = p1.perfDataCleaned
     #performance_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
     #api = requests.get(performance_data).json()
@@ -122,8 +125,14 @@ def drawTickerPlots(ticker):
     plt.ylabel("SHARE PRICE ($)")
 
     plt.savefig("Images/searchedTicker.png")  # saves plot in particular location
+    plt.show()
 
 # Main for testing
 if __name__ == '__main__':
-    drawTickerPlots("AAPL")
+    import random
+    p1 = Portfolio(holdings={"ABM": 200, "TSLA": 400, "KO": 76, "GE": 58, "GM": 79,
+                    "AAPL": 200, "NCR" : 350, "NOK": 21, "QSR" : 240, "MMM" : 58,
+                    "TAK" : 79, "SPY": 721, "DIA": 270, "FNCL": 32, "F":90})
+    drawTickerPlots(random.choice(list(p1.holdings.keys())))
+    drawSectorPlots('Information Technology')
     # drawSectorPlots('Information Technology')

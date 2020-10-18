@@ -147,6 +147,7 @@ def generateSuggestions(risk='medium', sectors=['any',]):
             'Telecommunication Services': ['VOX', 'NXTG', 'FCOM', 'IYZ']}
 
         etfsInSector = etfs['General']
+        print(sectors)
         for sector in sectors:
             etfsInSector += etfs[sector]
 
@@ -155,6 +156,6 @@ def generateSuggestions(risk='medium', sectors=['any',]):
     return random.sample(possibleSecurities, min(len(possibleSecurities), 3))
 
 if __name__ == '__main__':
-    # print(generateSuggestions(risk='high', sectors=['Telecommunication Services']))
-    for sector,companies in companiesPerSector().items():
-        print(f'{sector}: {companies}', end='\n\n\n')
+    print(generateSuggestions(risk='low'))
+    # for sector,companies in companiesPerSector().items():
+    #     print(f'{sector}: {companies}', end='\n\n\n')

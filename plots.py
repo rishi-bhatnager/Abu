@@ -15,7 +15,7 @@ adict is a dictionary of the users portfolio
 """
 # p1 = Portfolio({"ABM": 200, "TSLA": 400, "KO": 76})
 p1 = Portfolio(holdings={"ABM": 200, "TSLA": 400, "KO": 76, "GE": 58, "GM": 79,
-                    "AAPL": 200, "NCR" : 350, "NOK": 21, "QSR" : 240, "T" : 58,
+                    "AAPL": 200, "NCR" : 350, "NOK": 21, "QSR" : 240, "MMM" : 58,
                     "TAK" : 79, "SPY": 721, "DIA": 270, "FNCL": 32, "F":90})
 bigData = p1.portAnalCleaned
 #response = requests.get('https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true&\
@@ -132,13 +132,13 @@ def holdingsData(category):
 
 
 def portfolioSpecificData(ticker):
-    price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={key}&outputsize=full'
+    price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={ticker}&apikey={key}&outputsize=full'
     price_data = requests.get(price_url).json()
     price_data = price_data['Time Series (Daily)']
     price_data = sorted(price_data.items())
-    latest_close = float(price_data[-1][1]["4. close"])
-    monthly_return = latest_close - float(price_data[-23][1]["4. close"])
-    yearly_return = latest_close - float(price_data[-255][1]["4. close"])
+    latest_close = float(price_data[-1][1]["5. adjusted close"])
+    monthly_return = latest_close - float(price_data[-23][1]["5. adjusted close"])
+    yearly_return = latest_close - float(price_data[-255][1]["5. adjusted close"])
     df = pd.DataFrame({"Last Close ": [latest_close],
                        "Monthly return ": [monthly_return],
                        "Yearly return ": [yearly_return],
@@ -160,9 +160,9 @@ def assetTypes():
 
 
 if __name__ == '__main__':
-    print(tablePortfolio())
-    assetTypes()
-    industries()
-    sectors()
-    levels()
-    portfolioSpecificData("TSLA")
+    # print(tablePortfolio())
+    # assetTypes()
+    # industries()
+    # sectors()
+    # levels()
+    print(portfolioSpecificData("AAPL"))

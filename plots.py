@@ -6,6 +6,7 @@ import requests
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import datetime as dt
 
 """
 adict is a dictionary of the users portfolio
@@ -47,10 +48,12 @@ def levels():
     returnsMap = returns['returnsMap']
     plot_len = min(200, len(returnsMap.keys()))
     levels = np.ones(plot_len - 1)
-    lastN = sorted(returnsMap.items())[-plot_len:]
+    shortened_list = sorted(returnsMap.items())[-plot_len:]
+    dates = []
     for i in range(plot_len - 1):
-        levels[i] = lastN[i][1]['level']
-    plt.plot(levels)
+        levels[i] = shortened_list[i][1]['level']
+        dates.append(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y%m%d').date())
+    plt.plot(dates, levels)
 
     plt.xlabel("Months")
     plt.ylabel("Percent Growth")
@@ -140,8 +143,8 @@ def assetTypes():
 
 
 if __name__ == '__main__':
-    tablePortfolio()
-    assetTypes()
-    industries()
-    sectors()
+    # tablePortfolio()
+    # assetTypes()
+    # industries()
+    # sectors()
     levels()

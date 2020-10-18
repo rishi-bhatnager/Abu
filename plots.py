@@ -141,7 +141,7 @@ def portfolioSpecificData(ticker):
                        "Yearly return ": [yearly_return],
                        })
     df.rename(index={0: ticker}, inplace=True)
-    return df
+    return str(df)
 
 
 def sectors():

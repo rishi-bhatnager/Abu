@@ -206,8 +206,7 @@ def results():
         # saves parameter ticker from JSON request
         sym = req.get('queryResult').get('parameters').get('ticker')
         # calls plots to get data for specific asset
-        return {'fulfillmentText': pl.portfolioSpecificData(sym) + '\nEnter another ticker or "Main Menu" '
-                                                                   'to go back to menu'}
+        return {'fulfillmentText': pl.portfolioSpecificData(sym) + '\nEnter another ticker or "Main Menu" to go back to menu'}
     elif action == "poojan":
         return {
             "fulfillmentMessages": [

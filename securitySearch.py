@@ -5,30 +5,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import datetime as dt
 
-"""
-returning the graph for each security
-"""
+# Import key from Alpha Vantage
 key = "STHA8AW4L2LOMCWT"
 ticker = ""
-
-
-def initializeTicker(tick):
-    ticker = tick
-    performance_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(
-        ticker)
-    api = requests.get(performance_data).json()
-    data = api['resultMap']['RETURNS'][0]
-    daily = data['returnsMap']
-    day_list = sorted(daily.items())
-    return day_list
-
-
-# sector = "technology"
-# securities_data = 'https://www.blackrock.com/tools/hackathon/search-securities?datesAsStrings=true&query={}'.format(sector)
-# apiSecurity = requests.get(securities_data).json()
-# dataS = apiSecurity['resultMap']['SEARCH_RESULTS'][0]['resultList']
-
-# sector = 'Industrials'
 
 """
 This method uses the black rock API to give the top 5 performers in the a specific sector in the economy.
@@ -95,7 +74,7 @@ Returns: A graph plotted for stock price vs Date since the inception of the IPO
 
 
 def drawTickerPlots(ticker):
-    plt.show()
+    plt.show()  # clears plot
     price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={key}&outputsize=full'
     price_data = requests.get(price_url).json()
     price_data = price_data['Time Series (Daily)']
@@ -109,10 +88,10 @@ def drawTickerPlots(ticker):
     plt.title(ticker.upper() + " DATA")
     plt.xlabel("DATE")
     plt.ylabel("SHARE PRICE ($)")
-    plt.savefig("searchedTicker.png")
-    plt.show()
+    plt.savefig("searchedTicker.png")  # saves plot in particular location
 
 
+# Main for testing
 if __name__ == '__main__':
     drawTickerPlots("AAPL")
     # drawSectorPlots('Information Technology')

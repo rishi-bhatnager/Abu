@@ -35,7 +35,7 @@ def levels():
         levels[i] = lastN[i][1]['level']
     plt.plot(levels)
     plt.savefig("general.png")
-     plt.show()
+    plt.show()
 
 def getHoldings(portfolio):
     '''

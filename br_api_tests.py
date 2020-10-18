@@ -29,12 +29,8 @@ Key: returns (the bulk of the data) -- this is a dict
 '''
 
 
-def get_risk():
+def get_risk(ticker,shares):
     # Calculate Risk
-    holdings = data['holdings']
-    shares = 0
-    for security in holdings:
-        shares += security['weight']
 
     portfolio_risk = data['riskData']['totalRisk']
 

@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime as dt
+from initPortfolio import Portfolio
 
 
 # Import key from Alpha Vantage
@@ -11,11 +12,14 @@ key = "STHA8AW4L2LOMCWT"
 ticker = ""
 
 def initializeTicker(tick):
-    ticker = tick
-    performance_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
-    api = requests.get(performance_data).json()
-    data = api['resultMap']['RETURNS'][0]
-    daily = data['returnsMap']
+    p1 = Portfolio({"KO": 200, "REV": 259, "GM": 237})
+    data = p1.perfDataCleaned
+    #performance_data = 'https://www.blackrock.com/tools/hackathon/performance?datesAsStrings=true&identifiers={}'.format(ticker)
+    #api = requests.get(performance_data).json()
+    #data = api['resultMap']['RETURNS'][0]
+
+
+    daily = data[0]['returnsMap']
     day_list = sorted(daily.items())
     return day_list
 
@@ -52,7 +56,7 @@ def drawSectorPlots(sector):
     # Given sector dictionary and desired sector, create a plot of the overall growth of the sector
     # Based on the values of those securities
     if sector not in sector_dict:
-        return "Sector not in dictionary"
+        return "Sector not in dictionary, try another   "
 
     topNPerformers = 5
 
@@ -105,7 +109,6 @@ def drawTickerPlots(ticker):
 
     price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={ticker}&apikey={key}&outputsize=full'
     price_data = check_data(requests.get(price_url).json())
-
     price_data = price_data['Time Series (Daily)']
     dateList = []
     closeList = []
@@ -117,7 +120,8 @@ def drawTickerPlots(ticker):
     plt.title(ticker.upper() + " DATA")
     plt.xlabel("DATE")
     plt.ylabel("SHARE PRICE ($)")
-    plt.savefig("searchedTicker.png")  # saves plot in particular location
+
+    plt.savefig("Images/searchedTicker.png")  # saves plot in particular location
 
 # Main for testing
 if __name__ == '__main__':

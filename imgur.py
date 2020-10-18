@@ -15,9 +15,14 @@ def upload_image(file):
     img_dict = client.upload_from_path(file, config=None, anon=True)
     return img_dict['link']
 
+
 def upload_all():
-    arr = ['byAssetType.png', 'byIndustry.png', 'bySector.png', 'general.png', 'Dow.png', 'S&P.png']
+    arr = ['Images/byAssetType.png', 'Images/byIndustry.png', 'Images/bySector.png', 'Images/general.png',
+           'Images/Dow.png', 'Images/S&P.png']
     holder = []
     for a in arr:
         holder.append(upload_image(a))
     return holder
+
+
+upload_image('Images/byAssetType.png')

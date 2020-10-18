@@ -3,6 +3,7 @@ from flask import Flask, request, make_response, jsonify, send_file
 import json
 import br_api_tests as br
 import imgur as im
+import securitySearch as ss
 
 # initialize the flask app
 app = Flask(__name__)
@@ -22,11 +23,48 @@ def results():
     print(action)
     if action == 'tick-search':
         tick = req.get('queryResult').get('parameters').get('tick')
-        print(tick)
+        ss.drawTickerPlots(tick)
+        return {
+            "fulfillmentMessages": [
+                {
+                    "text": {
+                        "text": [
+                            "Here is {}'s performance: ".format(tick)
+                        ]
+                    },
+                    "platform": "TELEGRAM"
 
+                },
+                {
+                    "image": {
+                        "imageUri": im.upload_image('searchedTicker.png')
+                    },
+                    "platform": "TELEGRAM"
+                }
+        ]
+        }
     elif action == 'sector-search':
         sector = req.get('queryResult').get('parameters').get('sector')
-        return {'fulfillmentText': 'Sector: {}'.format(sector)}
+        txt = ss.drawSectorPlots(sector)
+        return {
+            "fulfillmentMessages": [
+                {
+                    "text": {
+                        "text": [
+                            txt
+                        ]
+                    },
+                    "platform": "TELEGRAM"
+
+                },
+                {
+                    "image": {
+                        #"imageUri": im.upload_image('sectorPerformers.png')
+                    },
+                    "platform": "TELEGRAM"
+                }
+            ]
+        }
     elif action == 'classify':
         return {
             "fulfillmentMessages": [
@@ -41,7 +79,7 @@ def results():
                 },
                 {
                     "image": {
-                        "imageUri": photos[0]
+                        #"imageUri": photos[0]
                     },
                     "platform": "TELEGRAM"
                 },
@@ -55,7 +93,7 @@ def results():
                 },
                 {
                     "image": {
-                        "imageUri": photos[1]
+                        #"imageUri": photos[1]
                     },
                     "platform": "TELEGRAM"
                 }
@@ -78,7 +116,7 @@ def results():
                 },
                 {
                     "image": {
-                        "imageUri": photos[3]
+                        #"imageUri": photos[3]
                     },
                     "platform": "TELEGRAM"
                 },
@@ -111,5 +149,5 @@ def webhook():
 # run the app
 if __name__ == '__main__':
     txt = br.get_rank()
-    photos = im.upload_all()
+    #photos = im.upload_all()
     app.run()

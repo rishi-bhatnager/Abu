@@ -30,6 +30,7 @@ This method uses the black rock API to give the top 5 performers in the a specif
 Returns: A table of top 5 tickers and their respective Market Caps
 """
 def drawSectorPlots(sector):
+    plt.show()
     from suggestions import companiesPerSector
     from br_api_tests import get_performanceData
 
@@ -37,7 +38,8 @@ def drawSectorPlots(sector):
     #Given sector dictionary and desired sector, create a plot of the overall growth of the sector
     #Based on the values of those securities
     if sector not in sector_dict:
-        raise Exception("Sector not in dictionary")
+        raise Exception()
+        return "Sector not in dictionary"
 
 
     topNPerformers = 5
@@ -50,9 +52,9 @@ def drawSectorPlots(sector):
     formatted = [(ticker, f'${int(mktCap):,}') for ticker,mktCap in topNStocks]
     df = pd.DataFrame(formatted, columns=['Ticker', 'Market Cap'])
     df.set_index('Ticker', drop=True, inplace=True)
-    print(f'The Top {topNPerformers} Stocks in {sector} are:\n{df}')
+    txt = f'The Top {topNPerformers} Stocks in {sector} are:\n\n{df}'
 
-
+    '''
     # calls Performance Data API on top n performers
     perfData = get_performanceData([ticker for ticker,_ in topNStocks], retNumHoldings=False)['resultMap']['RETURNS']
 
@@ -71,15 +73,22 @@ def drawSectorPlots(sector):
     for i in range(plot_len):
         dates.append(dt.datetime.strptime(shortened_list[i][0][0:10],'%Y%m%d').date())
     total_levels /= total_levels[0]
+`   '''
+    print(txt)
+    '''
     plt.plot(dates, total_levels)
     plt.title(sector.upper() + " PERFORMANCE")
-    plt.show()
+    plt.savefig('sectorPerformers.png')
+    '''
+    return txt
+
 
 """
 This method uses the alpha vantage API to get search for a specific ticker.
 Returns: A graph plotted for stock price vs Date since the inception of the IPO
 """
 def drawTickerPlots(ticker):
+    plt.show()
     price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={key}&outputsize=full'
     price_data = requests.get(price_url).json()
     price_data = price_data['Time Series (Daily)']
@@ -89,7 +98,8 @@ def drawTickerPlots(ticker):
         dateList.append(dt.datetime.strptime(date, '%Y-%m-%d').date())
         closeList.append(float(price_data[date]['4. close']))
     plt.plot(dateList, closeList)
-    plt.show()
+    return plt.savefig("searchedTicker.png")
+
 
 
 

@@ -7,7 +7,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-portfolio = {"AAPL" : 100, "TSLA" 340, "SNAP" : 450}
 """
 adict is a dictionary of the users portfolio
 """
@@ -127,6 +126,7 @@ def assetTypes():
 
 
 if __name__ == '__main__':
-    tablePortfolio()
+    ##tablePortfolio()
     assetTypes()
+    ##levels()
 

@@ -7,12 +7,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+key = "STHA8AW4L2LOMCWT"
+
 """
 adict is a dictionary of the users portfolio
 """
 def intializeApi(adict):
     portfolio = adict
-
 
 response = requests.get('https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true&\
     calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50%7CSPY~100')
@@ -97,7 +98,7 @@ def tablePortfolio():
     yields = get_levels(shares.keys(), retNumHoldings=False)
     zipped = [(ticker, shareCount, round(yields[ticker],2)) for ticker,shareCount in shares.items()]
 
-
+#in between shares and yield - last close; how much money they have gained or lost on tha
     df = pd.DataFrame(zipped, columns=['Ticker', 'Shares', 'Yield'])
     df.set_index('Ticker', drop=True, inplace=True)
 
@@ -127,6 +128,26 @@ def holdingsData(category):
 
     pie(catCounts, category[0])
 
+def portfolioSpecificData(ticker):
+    price_url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={key}&outputsize=full'
+    price_data = requests.get(price_url).json()
+    price_data = price_data['Time Series (Daily)']
+    price_data = sorted(price_data.items())
+    latest_close = price_data[-1][1]["4. close"]
+    print(price_data)
+
+    """
+    df = pd.DataFrame({ "Last Close " : latest_close,
+                        "Monthly return " : 
+                        "Yearly return " :
+                        })
+
+    #last close, money made, lost
+    """
+
+
+
+
 
 def sectors():
     holdingsData('gics1Sector')
@@ -140,8 +161,9 @@ def assetTypes():
 
 
 if __name__ == '__main__':
-    tablePortfolio()
-    assetTypes()
-    industries()
-    sectors()
-    levels()
+    #tablePortfolio()
+    #assetTypes()
+    #industries()
+    #sectors()
+    #levels()
+    portfolioSpecificData("TSLA")

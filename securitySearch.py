@@ -73,6 +73,8 @@ def drawSectorPlots(sector):
     total_levels /= total_levels[0]
     plt.plot(dates, total_levels)
     plt.title(sector.upper() + " PERFORMANCE")
+    plt.xlabel("DATE")
+    plt.ylabel("ADJUSTED RETURNS")
     plt.show()
 
 """
@@ -89,11 +91,12 @@ def drawTickerPlots(ticker):
         dateList.append(dt.datetime.strptime(date, '%Y-%m-%d').date())
         closeList.append(float(price_data[date]['4. close']))
     plt.plot(dateList, closeList)
+    plt.title(ticker.upper() + "DATA")
+    plt.xlabel("DATE")
+    plt.ylabel("SHARE PRICE ($)")
     plt.show()
 
-
-
 if __name__ == '__main__':
-    #drawTickerPlots("AAPL")
-    drawSectorPlots('Information Technology')
+    drawTickerPlots("AAPL")
+    #drawSectorPlots('Information Technology')
 

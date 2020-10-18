@@ -13,7 +13,11 @@ key = "STHA8AW4L2LOMCWT"
 """
 adict is a dictionary of the users portfolio
 """
-p1 = Portfolio({"ABM": 200, "TSLA": 400, "KO": 76})
+# p1 = Portfolio({"ABM": 200, "TSLA": 400, "KO": 76})
+p1 = Portfolio(holdings={"ABM": 200, "TSLA": 400, "KO": 76, "GE": 58, "GM": 79,
+                    "AAPL": 200, "NCR" : 350, "NOK": 21, "QSR" : 240, "T" : 58,
+                    "TAK" : 79, "SPY": 721, "DIA": 270, "FNCL": 32, "F":90,
+                    "MMM" : 78, "M": 63, "TAP": 46, "MNST": 79, "NOV": 10})
 bigData = p1.portAnalCleaned
 #response = requests.get('https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true&\
     #calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions=AAPL~150%7CTSLA~50%7CSPY~100')
@@ -158,8 +162,8 @@ def assetTypes():
 
 if __name__ == '__main__':
     print(tablePortfolio())
-    # assetTypes()
-    # industries()
-    # sectors()
-    # levels()
-    # portfolioSpecificData("TSLA")
+    assetTypes()
+    industries()
+    sectors()
+    levels()
+    portfolioSpecificData("TSLA")

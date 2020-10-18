@@ -4,6 +4,7 @@ import json, requests
 
 class Portfolio:
     def __init__(self, holdings={'AAPL': 150,'TSLA': 50,'SPY': 100}, usePortAnal=True):
+        self.holdings = holdings
         portfolio_anlaysis = 'https://www.blackrock.com/tools/hackathon/portfolio-analysis?calculateExpectedReturns=true& \
             calculateExposures=true&calculatePerformance=true&calculateRisk=true&includeChartData=true&positions='
         performance_data ='https://www.blackrock.com/tools/hackathon/performance?identifiers='
@@ -57,6 +58,14 @@ class Portfolio:
 
             with open(folder+fileName, mode='w') as out:
                 json.dump(data, out)
+
+
+    def __str__():
+        return self.holdings
+
+    def __repr__():
+        return __str__()
+
 
 
 if __name__ == '__main__':

@@ -179,8 +179,8 @@ def results():
                 },
                 {
                     "image": {
-                        "imageUri": "https://i.imgur.com/B0r0aDA.png"
-                        #"imageUri": photos[4]
+                        # "imageUri": "https://i.imgur.com/B0r0aDA.png"
+                        "imageUri": photos[4]
                     },
                     "platform": "TELEGRAM"
                 },
@@ -194,8 +194,8 @@ def results():
                 },
                 {
                     "image": {
-                        "imageUri": "https://i.imgur.com/B0r0aDA.png"
-                        #"imageUri": photos[5]
+                        #"imageUri": "https://i.imgur.com/B0r0aDA.png"
+                        "imageUri": photos[5]
                     },
                     "platform": "TELEGRAM"
                 },

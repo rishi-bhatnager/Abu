@@ -3,6 +3,14 @@ Financial chat bot leveraging the BlackRock Aladdin API, the AlphaVantage API, a
 
 ABU:  Enhancing customer service and the financial acumen of our clients through their interaction with the Blackrock chatbot
 
+<br/>
+
+<ins><b>NOTE ON DEMOS</b></ins><br/>
+Unfortunately, BlackRock’s Aladdin API is no longer public (it was only made available to us for the Hackathon), so our chatbot will not work. However, we have prepared a video and annotated screenshots to show you how Abu works!
+
+See "demo_writeup.pdf" in the demos folder for a detailed, written description of the most important features or check out [our video demo on YouTube](https://www.youtube.com/watch?v=6PywXPO8xKc&feature=youtu.be).
+
+<br/>
 
 <ins><b>ABSTRACT</b></ins>
 Our goal behind this project is to lower the cost of entry to financial markets by providing people with the tools and knowledge to make informed decisions with their money. Given the rise of chatbots, we felt that this was the best avenue allowing quick interactions and a direct flow of information to the user. We made many stylistic and design choices throughout our process to create a friendly, useful UI many of which you can see and experience. 
@@ -10,7 +18,7 @@ Our goal behind this project is to lower the cost of entry to financial markets 
 
 
 <ins><b>INSPIRATION</b></ins>
-In the Disney movie “Aladdin” the Kleptomaniacal monkey Abu is an inquisitive character. Hence, sticking with the Aladdin theme inspired from the name of the blackrock API we chose to name our chatbot “Abu.”
+In the Disney movie “Aladdin,” the Kleptomaniacal monkey Abu is an inquisitive character. Hence, sticking with the Aladdin theme inspired from the name of the blackrock API we chose to name our chatbot “Abu.”
 
 
 <ins><b>WHAT IT DOES</b></ins>

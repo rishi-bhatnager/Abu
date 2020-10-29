@@ -5,7 +5,7 @@ ABU:  Enhancing customer service and the financial acumen of our clients through
 
 <br/>
 
-<ins><b>NOTE ON DEMOS</b></ins><br/>
+<ins><b>DEMOS</b></ins><br/>
 Unfortunately, BlackRock’s Aladdin API is no longer public (it was only made available to us for the Hackathon), so our chatbot will not work. However, we have prepared a video and annotated screenshots to show you how Abu works!
 
 See "demo_writeup.pdf" in the demos folder for a detailed, written description of the most important features or check out [our video demo on YouTube](https://www.youtube.com/watch?v=6PywXPO8xKc&feature=youtu.be).
